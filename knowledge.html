@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>普法知识库 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 页面标题 ===== */
+    .page-header {
+      background: #fff;
+      padding: 28px 60px 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .page-header h2 {
+      font-size: 22px;
+      color: #1a3a5c;
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* ===== 选项卡 ===== */
+    .tabs {
+      background: #fff;
+      display: flex;
+      padding: 0 60px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .tab {
+      padding: 14px 24px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #1a3a5c;
+    }
+
+    .tab.active {
+      color: #1a3a5c;
+      font-weight: bold;
+      border-bottom-color: #1a3a5c;
+    }
+
+    /* ===== 内容区 ===== */
+    .content-area {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.show {
+      display: block;
+    }
+
+    /* ===== 知识卡片 ===== */
+    .knowledge-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 28px 32px;
+      margin-bottom: 18px;
+      border-left: 4px solid #2d6a9f;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .knowledge-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    }
+
+    .knowledge-card .card-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .knowledge-card .card-title .icon {
+      font-size: 22px;
+    }
+
+    .knowledge-card .card-body {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .knowledge-card .card-body ul {
+      padding-left: 20px;
+    }
+
+    .knowledge-card .card-body li {
+      margin-bottom: 6px;
+    }
+
+    .knowledge-card .card-tip {
+      background: #fef5e7;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #e8a838;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* ===== 案例卡片 ===== */
+    .case-card-kb {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 28px 32px;
+      margin-bottom: 18px;
+    }
+
+    .case-card-kb .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .case-card-kb .case-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a3a5c;
+    }
+
+    .case-card-kb .case-tag {
+      background: #eef3f8;
+      color: #2d6a9f;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .case-card-kb .case-summary {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+
+    .case-card-kb .case-result {
+      font-size: 13px;
+      color: #67c23a;
+      font-weight: bold;
+    }
+
+    /* ===== 流程步骤 ===== */
+    .flow-steps {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      flex: 1;
+      min-width: 180px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-step .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #2d6a9f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin: 0 auto 12px;
+      font-size: 16px;
+    }
+
+    .flow-step .step-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 6px;
+    }
+
+    .flow-step .step-desc {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.6;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 40px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html" class="active">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    普法知识库
+  </div>
+
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <h2>📚 普法知识库</h2>
+    <p>基础法律常识、维权流程、模板文书、精选案例，一站式法律知识获取</p>
+  </div>
+
+  <!-- 选项卡 -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('basics', this)">📖 法律常识</div>
+    <div class="tab" onclick="switchTab('flow', this)">🗺️ 维权流程</div>
+    <div class="tab" onclick="switchTab('templates', this)">📝 模板文书</div>
+    <div class="tab" onclick="switchTab('cases', this)">📋 精选案例</div>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content-area">
+
+    <!-- ========== 法律常识 ========== -->
+    <div class="tab-content show" id="tab-basics">
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">⚖️</span> 什么是劳动仲裁？</div>
+        <div class="card-body">
+          <p>劳动仲裁是指劳动争议仲裁委员会对当事人申请的劳动争议进行裁决的法律程序。它是解决劳动争议的主要途径之一，具有以下特点：</p>
+          <ul>
+            <li><strong>时效性</strong>：一般应在知道权利受侵害之日起1年内提出申请</li>
+            <li><strong>免费性</strong>：劳动仲裁不收取费用，经济成本低</li>
+            <li><strong>前置性</strong>：大部分劳动纠纷必须先经过仲裁，才能向法院起诉</li>
+            <li><strong>快速性</strong>：仲裁庭应在受理后45日内作出裁决</li>
+          </ul>
+          <div class="card-tip">💡 <span>小贴士：遇到劳动争议，建议先申请劳动仲裁而非直接起诉，程序更简便、成本更低。</span></div>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">💍</span> 离婚财产分割的基本原则</div>
+        <div class="card-body">
+          <p>根据《民法典》相关规定，离婚时夫妻共同财产的分割遵循以下原则：</p>
+          <ul>
+            <li><strong>协议优先</strong>：双方可就财产分割达成协议</li>
+            <li><strong>均等分割</strong>：协议不成，法院一般按均等原则判决</li>
+            <li><strong>照顾子女和女方</strong>：有未成年子女或女方无经济来源时，可适当多分</li>
+            <li><strong>照顾无过错方</strong>：一方存在家暴、出轨等重大过错，无过错方可多分</li>
+            <li><strong>婚前财产归各自所有</strong>：婚前的个人财产不属于夫妻共同财产</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">🛒</span> 消费者的基本权利（《消费者权益保护法》）</div>
+        <div class="card-body">
+          <ul>
+            <li><strong>安全权</strong>：购买的商品或服务不得损害人身和财产安全</li>
+            <li><strong>知情权</strong>：有权了解商品的真实情况，商家不得虚假宣传</li>
+            <li><strong>选择权</strong>：自主选择商品或服务，拒绝强制交易</li>
+            <li><strong>公平交易权</strong>：有权获得质量保障、价格合理、计量正确的商品</li>
+            <li><strong>求偿权</strong>：因商品或服务受到损害时，有权获得赔偿</li>
+            <li><strong>七天无理由退货</strong>：网购商品收货后7日内可无理由退货（特殊商品除外）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">💰</span> 民间借贷注意事项</div>
+        <div class="card-body">
+          <ul>
+            <li><strong>必须写借条</strong>：借条应写明双方身份信息、借款金额（大写+小写）、借款日期、还款期限、利息约定</li>
+            <li><strong>保留转账凭证</strong>：银行转账、微信/支付宝转账记录可作为电子证据</li>
+            <li><strong>利息上限</strong>：民间借贷利率不得超过合同成立时一年期贷款市场报价利率（LPR）的4倍</li>
+            <li><strong>诉讼时效</strong>：借款纠纷的诉讼时效为3年，从约定还款日或催收之日起算</li>
+            <li><strong>警惕套路贷</strong>：切勿签订空白合同或金额虚高的借条</li>
+          </ul>
+          <div class="card-tip">⚠️ <span>重要提醒：没有写借条的借款，仅凭微信聊天记录也能作为证据，但举证难度更大，建议务必补签书面借条。</span></div>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">🏠</span> 购买二手房注意事项</div>
+        <div class="card-body">
+          <ul>
+            <li><strong>查验产权</strong>：交易前务必去不动产登记中心查询房屋产权状态（是否抵押、查封）</li>
+            <li><strong>核实卖家身份</strong>：确认卖家是房屋合法所有权人</li>
+            <li><strong>签订正规合同</strong>：使用住建部门监制的标准合同，避免私下协议</li>
+            <li><strong>资金监管</strong>：定金和首付款建议走银行资金监管账户，不要直接转给卖家</li>
+            <li><strong>关注租赁情况</strong>：如果房屋有租客，"买卖不破租赁"，需确认租期何时结束</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 维权流程 ========== -->
+    <div class="tab-content" id="tab-flow">
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">🗺️</span> 劳动争议维权流程图</div>
+        <div class="card-body">
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="step-num">1</div>
+              <div class="step-title">协商调解</div>
+              <div class="step-desc">与用人单位协商，或向企业劳动争议调解委员会申请调解</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">2</div>
+              <div class="step-title">收集证据</div>
+              <div class="step-desc">劳动合同、工资单、考勤记录、聊天记录、解除通知书</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">3</div>
+              <div class="step-title">劳动仲裁</div>
+              <div class="step-desc">向劳动争议仲裁委员会提交仲裁申请书，附上证据材料</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">4</div>
+              <div class="step-title">法院诉讼</div>
+              <div class="step-desc">对仲裁结果不服，可在15日内向人民法院提起诉讼</div>
+            </div>
+          </div>
+          <div class="card-tip" style="margin-top:16px;">💡 <span>整个流程通常耗时3-6个月，劳动仲裁阶段免费，诉讼阶段需按标的额缴纳诉讼费。</span></div>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">🛒</span> 消费维权流程图</div>
+        <div class="card-body">
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="step-num">1</div>
+              <div class="step-title">与商家协商</div>
+              <div class="step-desc">保留商品、收据，先与商家沟通退货/换货/赔偿</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">2</div>
+              <div class="step-title">平台投诉</div>
+              <div class="step-desc">电商平台内的纠纷，先申请平台介入处理</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">3</div>
+              <div class="step-title">12315举报</div>
+              <div class="step-desc">拨打12315或通过全国12315平台在线投诉举报</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">4</div>
+              <div class="step-title">法律途径</div>
+              <div class="step-desc">协商无果可向法院提起诉讼，标的额较小的可走小额诉讼程序</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">🚗</span> 交通事故处理流程</div>
+        <div class="card-body">
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="step-num">1</div>
+              <div class="step-title">保护现场</div>
+              <div class="step-desc">立即停车，开启双闪，放置警示牌，拨打122报警</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">2</div>
+              <div class="step-title">报警定责</div>
+              <div class="step-desc">交警到场后出具《交通事故认定书》，确定责任划分</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">3</div>
+              <div class="step-title">保险理赔</div>
+              <div class="step-desc">联系保险公司定损理赔，保留维修发票和医疗票据</div>
+            </div>
+            <div class="flow-step">
+              <div class="step-num">4</div>
+              <div class="step-title">诉讼索赔</div>
+              <div class="step-desc">保险赔付不足或对方不配合，可向法院起诉人身损害赔偿</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 模板文书 ========== -->
+    <div class="tab-content" id="tab-templates">
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">📝</span> 劳动仲裁申请书模板</div>
+        <div class="card-body">
+          <p><strong>申请人</strong>：姓名，性别，身份证号，联系电话，通讯地址</p>
+          <p><strong>被申请人</strong>：公司全称，法定代表人，公司地址，联系电话</p>
+          <p><strong>仲裁请求</strong>：</p>
+          <p>1. 请求裁决被申请人支付拖欠工资人民币XX元</p>
+          <p>2. 请求裁决被申请人支付经济补偿金人民币XX元</p>
+          <p>3. 请求裁决被申请人补缴XX年XX月至XX年XX月的社会保险</p>
+          <p><strong>事实与理由</strong>：</p>
+          <p>（详细描述入职时间、岗位、工资标准、争议发生经过、已采取的协商措施等）</p>
+          <p><strong>此致</strong></p>
+          <p>XX市劳动人事争议仲裁委员会</p>
+          <p style="margin-top:10px;color:#999;">📎 附件：劳动合同复印件、工资银行流水、解除劳动合同通知书、身份证复印件</p>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">📄</span> 借条标准模板</div>
+        <div class="card-body">
+          <p style="text-align:center;font-size:18px;font-weight:bold;">借 条</p>
+          <p>借款人<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>（身份证号：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>）</p>
+          <p>今向出借人<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>（身份证号：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>）</p>
+          <p>借款人民币<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>元（大写：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>）。</p>
+          <p>借款期限：自<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>年<u>&nbsp;&nbsp;</u>月<u>&nbsp;&nbsp;</u>日起至<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>年<u>&nbsp;&nbsp;</u>月<u>&nbsp;&nbsp;</u>日止。</p>
+          <p>年利率：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>%（不超过LPR四倍）。</p>
+          <p>如逾期未还，按年利率<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>%计付逾期利息。</p>
+          <p style="margin-top:10px;">借款人（签名按手印）：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></p>
+          <p>日期：<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>年<u>&nbsp;&nbsp;</u>月<u>&nbsp;&nbsp;</u>日</p>
+          <div class="card-tip">⚠️ <span>重要：借条必须由借款人亲笔书写并签名、按手印、写明日期。身份证号必须准确无误。建议同时保留转账凭证。</span></div>
+        </div>
+      </div>
+
+      <div class="knowledge-card">
+        <div class="card-title"><span class="icon">📧</span> 律师函模板（消费维权）</div>
+        <div class="card-body">
+          <p><strong>致：XX公司</strong></p>
+          <p>本律师受<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>先生/女士委托，就贵公司涉嫌侵犯消费者权益一事，郑重致函如下：</p>
+          <p>（描述事情经过：何时购买、金额、出现的问题、已采取的沟通措施）</p>
+          <p>根据《消费者权益保护法》相关规定，贵公司的行为已构成对消费者合法权益的侵害。</p>
+          <p><strong>现提出以下要求</strong>：</p>
+          <p>1. 于收到本函之日起7日内予以书面回复</p>
+          <p>2. 履行退货/退款/赔偿义务</p>
+          <p>如贵公司逾期不答复，我方将保留通过向市场监督管理部门投诉及向人民法院提起诉讼等途径维权的权利。</p>
+          <p style="margin-top:10px;">XX律师事务所</p>
+          <p>律师：<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></p>
+          <p>日期：<u>&nbsp;&nbsp;&nbsp;&nbsp;</u>年<u>&nbsp;&nbsp;</u>月<u>&nbsp;&nbsp;</u>日</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 精选案例 ========== -->
+    <div class="tab-content" id="tab-cases">
+
+      <div class="case-card-kb">
+        <div class="case-header">
+          <div class="case-title">案例一：快递员送餐途中撞人，平台承担赔偿责任</div>
+          <span class="case-tag">交通事故</span>
+        </div>
+        <div class="case-summary">
+          2024年，某外卖平台骑手在送餐途中逆行撞伤行人，交警判定骑手全责。伤者医药费共计2.8万元，骑手无力赔偿。法院审理后认定：骑手在履行工作任务期间造成他人损害，用人单位应当承担侵权责任。最终判决外卖平台全额赔偿医药费及误工费。
+        </div>
+        <div class="case-result">✅ 裁判要点：平台用工关系中的"职务行为"，用人单位不能以"骑手是外包人员"为由推卸责任。</div>
+      </div>
+
+      <div class="case-card-kb">
+        <div class="case-header">
+          <div class="case-title">案例二：未签劳动合同，劳动者成功追回拖欠工资及双倍赔偿</div>
+          <span class="case-tag">劳动纠纷</span>
+        </div>
+        <div class="case-summary">
+          某餐饮公司招聘服务员后未签订劳动合同，口头约定月薪5000元。工作8个月后公司以"经营困难"为由拖欠3个月工资并辞退该员工。员工提供工资微信转账记录、工作群聊天记录、同事证言等证据。仲裁委员会认定双方存在事实劳动关系，裁决公司支付拖欠工资1.5万元、未签劳动合同的双倍工资差额4万元、违法解除赔偿金5000元。
+        </div>
+        <div class="case-result">✅ 裁判要点：未签劳动合同不影响事实劳动关系的认定；不签合同满一个月不满一年，应向劳动者支付双倍工资。</div>
+      </div>
+
+      <div class="case-card-kb">
+        <div class="case-header">
+          <div class="case-title">案例三：网购"正品"货不对板，消费者获三倍赔偿</div>
+          <span class="case-tag">消费维权</span>
+        </div>
+        <div class="case-summary">
+          消费者在某电商平台花费6800元购买一款品牌手机，收货后发现为翻新组装机，与商品页面描述的"正品全新"严重不符。商家拒绝退货。消费者向12315投诉并向法院起诉。法院认定商家构成消费欺诈，依据《消费者权益保护法》第五十五条，判决商家退还货款并支付三倍赔偿金共计27200元。
+        </div>
+        <div class="case-result">✅ 裁判要点：经营者提供商品有欺诈行为的，应当按照消费者的要求增加赔偿其受到的损失，增加赔偿的金额为商品价款的三倍。</div>
+      </div>
+
+      <div class="case-card-kb">
+        <div class="case-header">
+          <div class="case-title">案例四：离婚时一方隐藏转移财产，被少分或不分</div>
+          <span class="case-tag">婚姻家事</span>
+        </div>
+        <div class="case-summary">
+          夫妻结婚十年，男方在离婚诉讼前半年将名下200万元存款转移至其父母账户。女方申请法院调取银行流水后发现此行为。法院认定男方存在隐藏、转移夫妻共同财产的行为，依据《民法典》第一千零九十二条，判决转移的200万元中女方分得70%、男方仅分得30%。
+        </div>
+        <div class="case-result">✅ 裁判要点：离婚时一方隐藏、转移、变卖、毁损夫妻共同财产的，分割财产时可以少分或不分。</div>
+      </div>
+
+      <div class="case-card-kb">
+        <div class="case-header">
+          <div class="case-title">案例五：民间借贷仅凭微信记录胜诉</div>
+          <span class="case-tag">借贷纠纷</span>
+        </div>
+        <div class="case-summary">
+          原告通过微信向朋友借款3万元，未签订书面借条。后对方以"没借过"为由否认。原告提供微信聊天记录（包含借款数额、用途、承诺还款时间等完整对话）、微信转账凭证。法院综合审查后认定借贷关系成立，判决被告偿还本金及利息。
+        </div>
+        <div class="case-result">✅ 裁判要点：微信聊天记录和转账凭证可作为电子证据，证明借贷关系的存在，但需要记录完整、内容清楚。</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    function switchTab(tabName, el) {
+      // 选项卡高亮
+      var tabs = document.querySelectorAll('.tab');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      el.classList.add('active');
+
+      // 内容切换
+      var contents = ['basics', 'flow', 'templates', 'cases'];
+      contents.forEach(function(name) {
+        var content = document.getElementById('tab-' + name);
+        if (name === tabName) {
+          content.classList.add('show');
+        } else {
+          content.classList.remove('show');
+        }
+      });
+    }
+
+    // ========== 登录状态 ==========
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    var userBtn = document.getElementById('nav-user-btn');
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+    }
+
+    // 登录后显示案件池入口
+    if (currentUser) {
+    var u = JSON.parse(currentUser);
+    var poolEntry = document.getElementById('case-pool-entry');
+    if (poolEntry) poolEntry.style.display = 'inline';
+    }
+
+    // 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+    // 管理员模式：显示后台入口
+      if (localStorage.getItem('faqiao_adminMode') === 'true') {
+        var adminEntry = document.getElementById('admin-entry');
+        if (adminEntry) adminEntry.style.display = 'inline';
+      }
+  </script>
+
+</body>
+</html>

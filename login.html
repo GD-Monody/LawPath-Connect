@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录/注册 - 律途</title>
+  <style>
+    /* ===== 全局 ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 主体：居中卡片 ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      width: 500px;
+      overflow: hidden;
+    }
+
+    /* ===== 选项卡切换 ===== */
+    .tabs {
+      display: flex;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #f5f7fa;
+      color: #999;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: #1a3a5c;
+      border-bottom: 3px solid #1a3a5c;
+    }
+
+    /* ===== 表单区域 ===== */
+    .form-area {
+      padding: 32px 36px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    /* 角色选择卡片 */
+    .role-select {
+      display: flex;
+      gap: 12px;
+    }
+
+    .role-option {
+      flex: 1;
+      text-align: center;
+      padding: 14px 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .role-option:hover {
+      border-color: #2d6a9f;
+    }
+
+    .role-option.selected {
+      border-color: #1a3a5c;
+      background: #eef3f8;
+    }
+
+    .role-option .icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .role-option .label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .role-option .hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    /* 验证码行 */
+    .captcha-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .captcha-row input {
+      flex: 1;
+    }
+
+    .btn-captcha {
+      background: #e8a838;
+      color: #1a3a5c;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* 提交按钮 */
+    .btn-submit {
+      width: 100%;
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+      background: #2d6a9f;
+    }
+
+    /* 协议 */
+    .agreement {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .agreement a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    /* 隐藏 */
+    .hidden {
+      display: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="login.html" class="btn-register">注册 / 登录</a>
+    </div>
+  </div>
+
+<!--主体-->
+<div class="main">
+    <div class="login-card">
+
+        <!--选项卡-->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">登录</div>
+            <div class="tab" onclick="switchTab('register')">注册</div>
+        </div>
+
+        <!--登录表单-->
+        <div class="form-area" id="form-login">
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="text" placeholder="请输入手机号">
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" placeholder="请输入密码">
+            </div>
+            <button class="btn-submit" onclick="handleLogin()">登录</button>
+            <div class="agreement">
+                登录即表示同意 <a href="#"> 《用户服务协议》 </a> 和 <a href="#"> 《隐私政策》 </a>
+            </div>
+        </div>
+
+              <!--注册表单-->
+      <div class="form-area hidden" id="form-register">
+        <!--角色选择-->
+        <div class="form-group">
+          <label>注册身份</label>
+          <div class="role-select">
+            <div class="role-option selected" onclick="selectRole(this, 'user')">
+              <div class="icon">👤</div>
+              <div class="label">普通用户</div>
+              <div class="hint">寻求法律服务</div>
+            </div>
+            <div class="role-option" onclick="selectRole(this, 'lawyer')">
+              <div class="icon">⚖️</div>
+              <div class="label">执业律师</div>
+              <div class="hint">提供法律服务</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>手机号</label>
+          <input type="text" id="reg-phone" placeholder="请输入手机号">
+        </div>
+        <div class="form-group">
+          <label>验证码</label>
+          <div class="captcha-row">
+            <input type="text" id="reg-captcha" placeholder="请输入验证码">
+            <button class="btn-captcha" id="captcha-btn" onclick="sendCode()">获取验证码</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>设置密码</label>
+          <input type="password" id="reg-password" placeholder="请设置6-16位密码">
+        </div>
+        <div class="form-group">
+          <label>确认密码</label>
+          <input type="password" id="reg-confirm" placeholder="请再次输入密码">
+        </div>
+        <button class="btn-submit" onclick="handleRegister()">注册</button>
+        <div class="agreement">
+          注册即表示同意 <a href="#">《用户服务协议》</a> 和 <a href="#">《隐私政策》</a>
+        </div>
+      </div>
+      <!-- 注册表单结束 -->
+
+
+<!--底部-->
+<div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <!-- 简单的选项卡切换脚本 -->
+  <script>
+    function switchTab(type) {
+      // 切换选项卡样式
+      var tabs = document.querySelectorAll('.tab');
+      tabs[0].classList.remove('active');
+      tabs[1].classList.remove('active');
+      if (type === 'login') {
+        tabs[0].classList.add('active');
+      } else {
+        tabs[1].classList.add('active');
+      }
+
+      // 切换表单显示
+      document.getElementById('form-login').classList.add('hidden');
+      document.getElementById('form-register').classList.add('hidden');
+      if (type === 'login') {
+        document.getElementById('form-login').classList.remove('hidden');
+      } else {
+        document.getElementById('form-register').classList.remove('hidden');
+      }
+    }
+
+    function selectRole(el, role) {
+      // 取消所有选中
+      var options = document.querySelectorAll('.role-option');
+      options.forEach(function(opt) {
+        opt.classList.remove('selected');
+      });
+      // 选中当前
+      el.classList.add('selected');
+    }
+
+function handleLogin() {
+  var phone = document.querySelector('#form-login input[type="text"]').value;
+  var password = document.querySelector('#form-login input[type="password"]').value;
+
+  if (phone === '' || password === '') {
+    alert('请输入手机号和密码');
+    return;
+  }
+
+  // 从 localStorage 读取已注册的用户
+  var usersStr = localStorage.getItem('faqiao_users');
+  var users = usersStr ? JSON.parse(usersStr) : [];
+
+  // 查找匹配的用户
+  var found = users.find(function(u) {
+    return u.phone === phone && u.password === password;
+  });
+
+  if (!found) {
+    alert('登录失败：手机号或密码错误');
+    return;
+  }
+
+  // 登录成功，存储当前用户
+  localStorage.setItem('faqiao_currentUser', JSON.stringify(found));
+  alert('登录成功！正在跳转……');
+  window.location.href = 'index.html';
+}
+
+function handleRegister() {
+  var phone = document.getElementById('reg-phone').value.trim();
+  var captcha = document.getElementById('reg-captcha').value.trim();
+  var password = document.getElementById('reg-password').value;
+  var confirm = document.getElementById('reg-confirm').value;
+
+  if (phone === '' || password === '' || confirm === '' || captcha === '') {
+    alert('请填写所有必填信息');
+    return;
+  }
+  if  (!/^\d{11}$/.test(phone)) {
+    alert('注册失败：请输入有效的11位手机号');
+    return;
+  }
+  if (password !== confirm) {
+    alert('注册失败：两次输入的密码不一致');
+    return;
+  }
+  if (password.length < 6) {
+    alert('注册失败：密码长度不能少于6位');
+    return;
+  }
+  if (password.length > 16) {
+    alert('注册失败：密码长度不能超过16位');
+    return;
+  }
+  if (captcha !== '96251') {
+    alert('注册失败：验证码错误');
+    return;
+  }
+
+  // 读取已有用户
+  var usersStr = localStorage.getItem('faqiao_users');
+  var users = usersStr ? JSON.parse(usersStr) : [];
+
+  // 检查手机号是否已注册
+  var exists = users.find(function(u) {
+    return u.phone === phone;
+  });
+  if (exists) {
+    alert('注册失败：该手机号已被注册');
+    return;
+  }
+
+  // 判断角色
+  var roleEl = document.querySelector('#form-register .role-option.selected');
+  var role = roleEl && roleEl.querySelector('.label').textContent === '执业律师' ? 'lawyer' : 'user';
+
+  // 存入新用户
+  var newUser = {
+    phone: phone,
+    password: password,
+    role: role,
+    roleName: role === 'lawyer' ? '执业律师' : '普通用户'
+  };
+  users.push(newUser);
+  localStorage.setItem('faqiao_users', JSON.stringify(users));
+
+  alert('注册成功！欢迎加入律途。');
+  // 自动登录
+  localStorage.setItem('faqiao_currentUser', JSON.stringify(newUser));
+  window.location.href = 'index.html';
+}
+
+function sendCode() {
+  var btn = document.getElementById('captcha-btn');
+  var seconds = 60;
+  btn.disabled = true;
+  btn.style.background = '#ccc';
+  btn.textContent = seconds + '秒后重发';
+  
+  var timer = setInterval(function() {
+    seconds--;
+    btn.textContent = seconds + '秒后重发';
+    if (seconds <= 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.style.background = '#e8a838';
+      btn.textContent = '获取验证码';
+    }
+  }, 1000);
+  
+  alert('验证码已发送！');
+  alert('演示模式下请输入96251');
+}
+
+  </script>
+
+</body>
+</html>

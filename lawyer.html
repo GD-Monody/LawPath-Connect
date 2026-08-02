@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>找律师 - 律途</title>
+<style>
+    /* ===== 全局 ===== */
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+
+    body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    }
+
+    /* ===== 导航栏（和首页保持一致） ===== */
+    .navbar {
+    background: #1a3a5c;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 60px;
+    height: 64px;
+    }
+
+    .navbar .logo {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+    color: #ccd9e6;
+    text-decoration: none;
+    margin-left: 32px;
+    font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+    color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+    color: #e8a838;
+    font-weight: bold;
+    }
+
+    .navbar .btn-register {
+    background: #e8a838;
+    color: #1a3a5c;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-left: 32px;
+    }
+
+    /* ===== 页面标题区 ===== */
+    .page-header {
+    background: #fff;
+    padding: 30px 60px;
+    border-bottom: 1px solid #e8e8e8;
+    }
+
+    .page-header h2 {
+    font-size: 24px;
+    color: #1a3a5c;
+    margin-bottom: 8px;
+    }
+
+    .page-header p {
+    font-size: 14px;
+    color: #999;
+    }
+
+    /* ===== 搜索和筛选区 ===== */
+    .filter-bar {
+    background: #fff;
+    padding: 20px 60px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    }
+
+    .filter-bar select {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    cursor: pointer;
+    }
+
+    .filter-bar select:focus {
+    border-color: #1a3a5c;
+    outline: none;
+    }
+
+    /* ===== 律师卡片网格 ===== */
+    .lawyer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 40px 60px;
+    max-width: 1200px;
+    }
+
+    /* ===== 单张律师卡片 ===== */
+    .lawyer-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    }
+
+    .lawyer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    /* 头像 + 姓名横排 */
+    .lawyer-card .card-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    }
+
+    .lawyer-card .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1a3a5c;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    }
+
+    .lawyer-card .name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a3a5c;
+    }
+
+    .lawyer-card .title {
+    font-size: 13px;
+    color: #999;
+    margin-top: 2px;
+    }
+
+    /* 擅长领域标签 */
+    .lawyer-card .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    }
+
+    .lawyer-card .tag {
+    background: #eef3f8;
+    color: #2d6a9f;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    }
+
+    /* 简介 */
+    .lawyer-card .desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    }
+
+    /* 底部信息：年限 + 评分 */
+    .lawyer-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #999;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 14px;
+    }
+
+    .lawyer-card .rating {
+    color: #e8a838;
+    font-weight: bold;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #bbb;
+    background: #fff;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+    }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="lawyer.html" class="active">找律师</a>
+    <a href="publish.html">案件发布</a>
+    <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+    <a href="ai-match.html">AI匹配</a>
+    <a href="community.html">互助社区</a>
+    <a href="knowledge.html">普法知识</a>
+    <a href="public-welfare.html">公益咨询</a>
+    <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+    <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+</div>
+
+<!-- 页面标题 -->
+<div class="page-header">
+    <h2>找律师</h2>
+    <p>一键筛选，精准匹配适合您的专业律师</p>
+</div>
+
+<!-- 筛选栏 -->
+<div class="filter-bar">
+  <select id="filter-field" onchange="filterLawyers()">
+    <option value="">全部领域</option>
+    <option>劳动纠纷</option>
+    <option>婚姻家事</option>
+    <option>借贷纠纷</option>
+    <option>房产纠纷</option>
+    <option>消费维权</option>
+    <option>合同纠纷</option>
+    <option>刑事辩护</option>
+    <option>知识产权</option>
+    <option>交通事故</option>
+  </select>
+  <select id="filter-years" onchange="filterLawyers()">
+    <option value="">执业年限不限</option>
+    <option>3年以下</option>
+    <option>3-5年</option>
+    <option>5-10年</option>
+    <option>10年以上</option>
+  </select>
+<select id="filter-area" onchange="filterLawyers()">
+  <option value="">全部地区</option>
+  <optgroup label="华北地区">
+    <option>北京市</option>
+    <option>天津市</option>
+    <option>河北省</option>
+    <option>山西省</option>
+    <option>内蒙古自治区</option>
+  </optgroup>
+  <optgroup label="东北地区">
+    <option>辽宁省</option>
+    <option>吉林省</option>
+    <option>黑龙江省</option>
+  </optgroup>
+  <optgroup label="华东地区">
+    <option>上海市</option>
+    <option>江苏省</option>
+    <option>浙江省</option>
+    <option>安徽省</option>
+    <option>福建省</option>
+    <option>江西省</option>
+    <option>山东省</option>
+  </optgroup>
+  <optgroup label="华中地区">
+    <option>河南省</option>
+    <option>湖北省</option>
+    <option>湖南省</option>
+  </optgroup>
+  <optgroup label="华南地区">
+    <option>广东省</option>
+    <option>广西壮族自治区</option>
+    <option>海南省</option>
+  </optgroup>
+  <optgroup label="西南地区">
+    <option>重庆市</option>
+    <option>四川省</option>
+    <option>贵州省</option>
+    <option>云南省</option>
+    <option>西藏自治区</option>
+  </optgroup>
+  <optgroup label="西北地区">
+    <option>陕西省</option>
+    <option>甘肃省</option>
+    <option>青海省</option>
+    <option>宁夏回族自治区</option>
+    <option>新疆维吾尔自治区</option>
+  </optgroup>
+  <optgroup label="其他">
+    <option>其他</option>
+  </optgroup>
+</select>
+</div>
+
+<!-- 律师列表 -->
+<div class="lawyer-grid" id="lawyer-grid"></div>
+
+<!-- 底部 -->
+<div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+</div>
+
+<script>
+  // 检查登录状态
+  var currentUser = localStorage.getItem('faqiao_currentUser');
+      // 管理员模式检测
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var entry = document.getElementById('admin-entry');
+      if (entry) entry.style.display = 'inline';
+    }
+  var userBtn = document.getElementById('nav-user-btn');
+
+  if (currentUser) {
+    var user = JSON.parse(currentUser);
+    userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+    userBtn.href = '#';
+    userBtn.onclick = function() {
+      localStorage.removeItem('faqiao_currentUser');
+      alert('已退出登录');
+      window.location.reload();
+    };
+  }
+</script>
+
+<script>
+  // ========== 律师数据（12位） ==========
+  var allLawyers = [
+    {
+      id: 1,
+      name: '张明远', surname: '张',
+      firm: '北京盈科律师事务所', title: '高级合伙人',
+      city: '北京市', years: 12, rating: 4.9,
+      tags: ['劳动纠纷', '工伤赔偿', '合同纠纷', '社保争议'],
+      desc: '执业12年，专注劳动争议与工伤赔偿领域，累计代理案件800+，胜诉率92%。',
+      intro: '张明远律师，北京大学法学硕士，现任北京盈科律师事务所高级合伙人。执业12年来专注劳动争议与工伤赔偿领域，累计代理各类案件超过800件，胜诉率达到92%。曾多次应邀为人力资源和社会保障部、全国总工会等机构提供专业法律咨询。',
+      cases: 800, winRate: '92%',
+      cert: '11101201810234567',
+      honors: ['年度优秀律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、答辩状、证据清单等', period: '3-5个工作日', price: '¥800起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥200/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥5000起' },
+        { type: '出庭协助', desc: '庭审指导、出庭辩护', period: '按排期', price: '¥3000起' }
+      ],
+      reviews: [
+        { name: '刘先生', date: '2025年6月', stars: 5, text: '张律师非常专业，我的劳动仲裁案件在他的帮助下顺利胜诉。从证据收集到出庭辩护，每一步都给了我明确的指导，收费也很透明。' },
+        { name: '王女士', date: '2025年5月', stars: 5, text: '公司拖欠工资半年，经朋友推荐找到了张律师。他帮我写了律师函，公司收到后很快就付清了欠款。' },
+        { name: '陈先生', date: '2025年4月', stars: 4, text: '工伤认定遇到困难，张律师帮我梳理了所有证据并代理了复议程序，最终顺利拿到了赔偿。' }
+      ]
+    },
+    {
+      id: 2,
+      name: '李婉婷', surname: '李',
+      firm: '上海锦天城律师事务所', title: '合伙人',
+      city: '上海市', years: 8, rating: 4.8,
+      tags: ['婚姻家事', '遗产继承', '子女抚养'],
+      desc: '深耕婚姻家事领域8年，擅长处理复杂离婚财产分割、子女抚养权争议，调解成功率高。',
+      intro: '李婉婷律师，复旦大学法学博士，上海锦天城律师事务所合伙人。专注婚姻家事与遗产继承领域8年，处理过大量复杂的高净值离婚财产分割案件，尤其擅长以调解方式化解家庭纠纷。',
+      cases: 500, winRate: '90%',
+      cert: '23101201720456890',
+      honors: ['上海市优秀女律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '离婚协议、起诉状、财产清单等', period: '3-5个工作日', price: '¥1000起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥300/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥8000起' },
+        { type: '调解服务', desc: '家庭纠纷调解、协议谈判', period: '按协商排期', price: '¥2000起' }
+      ],
+      reviews: [
+        { name: '赵女士', date: '2025年7月', stars: 5, text: '李律师帮我处理了离婚财产分割，整个过程专业又耐心，结果远超预期。' },
+        { name: '周先生', date: '2025年3月', stars: 5, text: '遗产纠纷纠缠了两年，李律师介入后三个月就达成了调解协议。' }
+      ]
+    },
+    {
+      id: 3,
+      name: '王志刚', surname: '王',
+      firm: '广州金鹏律师事务所', title: '专职律师',
+      city: '广东省', years: 6, rating: 4.7,
+      tags: ['消费维权', '借贷纠纷', '房产纠纷'],
+      desc: '擅长消费维权与民间借贷案件，曾代理多起具有社会影响力的群体诉讼案件。',
+      intro: '王志刚律师，中山大学法学学士，广州金鹏律师事务所专职律师。执业6年来专注于消费维权和民间借贷领域，以扎实的法律功底和灵活的诉讼策略赢得客户信赖。',
+      cases: 350, winRate: '88%',
+      cert: '44101201930456123',
+      honors: ['广州市优秀青年律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、答辩状、证据清单等', period: '3-5个工作日', price: '¥600起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥150/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥4000起' },
+        { type: '律师函发送', desc: '起草并发送正式律师函', period: '1-2个工作日', price: '¥500起' }
+      ],
+      reviews: [
+        { name: '何先生', date: '2025年6月', stars: 5, text: '王律师帮我追回了被拖欠的借款，整个过程高效透明。' },
+        { name: '林女士', date: '2025年2月', stars: 4, text: '消费维权的案子处理得不错，就是回复消息偶尔有点慢。' }
+      ]
+    },
+    {
+      id: 4,
+      name: '陈思涵', surname: '陈',
+      firm: '成都泰和泰律师事务所', title: '资深律师',
+      city: '四川省', years: 10, rating: 4.9,
+      tags: ['房产纠纷', '合同纠纷', '建筑工程'],
+      desc: '房地产与建设工程领域资深律师，服务过多个大型房地产开发项目，经验丰富。',
+      intro: '陈思涵律师，四川大学法学硕士，成都泰和泰律师事务所资深律师。在房地产和建设工程法律领域深耕10年，曾为万科、龙湖等知名房企提供法律服务。',
+      cases: 420, winRate: '93%',
+      cert: '51101201640567234',
+      honors: ['四川省优秀律师', '年度最佳房地产律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、答辩状、证据清单等', period: '3-5个工作日', price: '¥1200起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥400/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥10000起' },
+        { type: '合同审查', desc: '房屋买卖/租赁合同审查修改', period: '1-2个工作日', price: '¥1500起' }
+      ],
+      reviews: [
+        { name: '马先生', date: '2025年5月', stars: 5, text: '陈律师帮我处理的房产纠纷，专业且高效，最终拿回了应得的赔偿。' },
+        { name: '杨女士', date: '2025年4月', stars: 5, text: '建筑合同纠纷非常复杂，陈律师条理清晰，层层推进，最终胜诉。' }
+      ]
+    },
+    {
+      id: 5,
+      name: '赵雅琴', surname: '赵',
+      firm: '杭州六和律师事务所', title: '副主任',
+      city: '浙江省', years: 9, rating: 4.8,
+      tags: ['婚姻家事', '劳动纠纷', '妇女权益'],
+      desc: '兼具婚姻家事与劳动法双领域专长，善于从多角度为当事人争取最大权益。',
+      intro: '赵雅琴律师，浙江大学法学硕士，杭州六和律师事务所副主任。同时深耕婚姻家事和劳动法两大民生领域，代理的多起案件被浙江省高院评选为典型案例。',
+      cases: 600, winRate: '91%',
+      cert: '33101201750678345',
+      honors: ['浙江省优秀女律师', '杭州市三八红旗手'],
+      services: [
+        { type: '诉讼文书代写', desc: '离婚协议、起诉状、劳动仲裁申请等', period: '3-5个工作日', price: '¥900起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥250/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥6000起' },
+        { type: '调解服务', desc: '劳动纠纷调解、家事调解', period: '按协商排期', price: '¥1800起' }
+      ],
+      reviews: [
+        { name: '钱女士', date: '2025年6月', stars: 5, text: '赵律师非常有同理心，帮我处理离婚和劳动纠纷两个案子，结果都很满意。' },
+        { name: '孙先生', date: '2025年3月', stars: 5, text: '公司在裁员问题上处理不当，赵律师帮我争取到了N+3的赔偿。' }
+      ]
+    },
+    {
+      id: 6,
+      name: '刘建民', surname: '刘',
+      firm: '深圳华商律师事务所', title: '高级律师',
+      city: '广东省', years: 7, rating: 4.6,
+      tags: ['借贷纠纷', '消费维权', '金融纠纷'],
+      desc: '专注民间借贷与金融纠纷，曾为200+小微企业提供债务重组与维权法律服务。',
+      intro: '刘建民律师，武汉大学法学学士，深圳华商律师事务所高级律师。执业7年，专注民间借贷和金融纠纷领域，累计为超过200家小微企业提供债务重组和维权服务。',
+      cases: 380, winRate: '86%',
+      cert: '44103201860789456',
+      honors: ['深圳市优秀青年律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、答辩状、证据清单等', period: '3-5个工作日', price: '¥700起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥180/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥4500起' },
+        { type: '债务重组咨询', desc: '企业/个人债务重组方案设计', period: '3-7个工作日', price: '¥2000起' }
+      ],
+      reviews: [
+        { name: '吴先生', date: '2025年5月', stars: 4, text: '帮助我的小公司做了债务重组，避免了破产，非常感谢。' },
+        { name: '郑先生', date: '2025年1月', stars: 5, text: '借贷纠纷处理得干净利落，价格也很合理。' }
+      ]
+    },
+    {
+      id: 7,
+      name: '周文博', surname: '周',
+      firm: '北京金杜律师事务所', title: '合伙人',
+      city: '北京市', years: 15, rating: 4.9,
+      tags: ['刑事辩护', '经济犯罪', '职务犯罪'],
+      desc: '前检察官出身，专注刑事辩护15年，办理过多起在全国具有重大影响力的刑事案件。',
+      intro: '周文博律师，中国政法大学法学博士，曾在某市检察院工作8年，后转型律师。现为北京金杜律师事务所合伙人，专注刑事辩护，尤其擅长经济犯罪和职务犯罪案件的辩护。',
+      cases: 300, winRate: '85%',
+      cert: '11101199910890123',
+      honors: ['全国优秀刑辩律师', '年度最佳刑事辩护律师'],
+      services: [
+        { type: '刑事辩护', desc: '侦查/审查起诉/审判阶段全程辩护', period: '按案件阶段', price: '¥20000起' },
+        { type: '取保候审申请', desc: '代为申请取保候审', period: '3-5个工作日', price: '¥5000起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥500/次' },
+        { type: '刑事控告', desc: '代理被害人提起刑事控告', period: '按案件周期', price: '¥10000起' }
+      ],
+      reviews: [
+        { name: '黄先生家属', date: '2025年4月', stars: 5, text: '周律师的专业辩护让我家人获得了从轻判决，全家都非常感激。' },
+        { name: '曹先生', date: '2025年2月', stars: 5, text: '经济案件非常复杂，周律师梳理得很清楚，最终检察院作出了不起诉决定。' }
+      ]
+    },
+    {
+      id: 8,
+      name: '吴雪梅', surname: '吴',
+      firm: '上海方达律师事务所', title: '资深律师',
+      city: '上海市', years: 11, rating: 4.8,
+      tags: ['知识产权', '商标维权', '专利诉讼'],
+      desc: '知识产权领域资深律师，代理过多个知名品牌的商标维权和专利侵权诉讼案件。',
+      intro: '吴雪梅律师，华东政法大学知识产权法硕士，上海方达律师事务所资深律师。执业11年，专注知识产权保护，代理的多个案件入选最高人民法院知识产权典型案例。',
+      cases: 280, winRate: '90%',
+      cert: '23101201570901234',
+      honors: ['全国知识产权优秀律师'],
+      services: [
+        { type: '知识产权维权', desc: '商标/专利/著作权侵权诉讼', period: '按案件周期', price: '¥15000起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥400/次' },
+        { type: '侵权证据保全', desc: '公证取证、证据固定', period: '1-3个工作日', price: '¥3000起' },
+        { type: '知识产权布局', desc: '商标注册、专利申请策略咨询', period: '按项目规模', price: '¥5000起' }
+      ],
+      reviews: [
+        { name: '某科技公司法务', date: '2025年6月', stars: 5, text: '吴律师帮我们打赢了专利侵权官司，挽回了巨大的经济损失。' },
+        { name: '徐先生', date: '2025年3月', stars: 4, text: '商标被抢注的问题得到了很好的解决，专业能力毋庸置疑。' }
+      ]
+    },
+    {
+      id: 9,
+      name: '郑国栋', surname: '郑',
+      firm: '广州广信律师事务所', title: '合伙人',
+      city: '广东省', years: 8, rating: 4.7,
+      tags: ['交通事故', '人身损害', '保险理赔'],
+      desc: '专注交通事故与人身损害赔偿领域，累计为千余名受害者争取到合理赔偿。',
+      intro: '郑国栋律师，中南财经政法大学法学学士，广州广信律师事务所合伙人。执业8年，专注交通事故和人身损害赔偿案件，对保险理赔流程极为熟悉。',
+      cases: 1200, winRate: '93%',
+      cert: '44101201881012345',
+      honors: ['广东省优秀公益律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、赔偿清单、证据材料整理等', period: '3-5个工作日', price: '¥500起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥100/次' },
+        { type: '案件全程代理', desc: '从事故认定到赔偿到账全程服务', period: '按案件周期', price: '¥3000起' },
+        { type: '保险理赔谈判', desc: '与保险公司协商理赔金额', period: '1-2周', price: '¥1500起' }
+      ],
+      reviews: [
+        { name: '冯先生', date: '2025年7月', stars: 5, text: '出了车祸之后完全不知道怎么办，郑律师手把手指导，最终拿到了合理赔偿。' },
+        { name: '褚女士', date: '2025年4月', stars: 5, text: '保险公司一开始只愿意赔很少，郑律师介入后赔偿金额翻了3倍。' }
+      ]
+    },
+    {
+      id: 10,
+      name: '孙晓琳', surname: '孙',
+      firm: '成都明炬律师事务所', title: '专职律师',
+      city: '四川省', years: 6, rating: 4.6,
+      tags: ['婚姻家事', '遗产继承', '未成年人保护'],
+      desc: '专注于婚姻家事案件，特别关注未成年人权益保护，办案风格温和而坚定。',
+      intro: '孙晓琳律师，西南政法大学法学硕士，成都明炬律师事务所专职律师。执业6年，坚持"法律有温度"的办案理念，在婚姻家事案件中特别关注妇女和未成年人的权益保护。',
+      cases: 400, winRate: '87%',
+      cert: '51101202061123456',
+      honors: ['成都市法律援助先进个人'],
+      services: [
+        { type: '诉讼文书代写', desc: '离婚协议、起诉状、抚养权申请等', period: '3-5个工作日', price: '¥600起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥150/次' },
+        { type: '案件全程代理', desc: '从立案到结案全程服务', period: '按案件周期', price: '¥5000起' },
+        { type: '抚养权争议调解', desc: '子女抚养权、探视权纠纷调解', period: '按协商排期', price: '¥2000起' }
+      ],
+      reviews: [
+        { name: '卫女士', date: '2025年5月', stars: 5, text: '孙律师帮我争取到了孩子的抚养权，她的温柔和坚定给了我很大的力量。' },
+        { name: '蒋先生', date: '2025年2月', stars: 4, text: '遗产继承的案子处理得不错，就是周期比预期长了一些。' }
+      ]
+    },
+    {
+      id: 11,
+      name: '高峰', surname: '高',
+      firm: '杭州天册律师事务所', title: '合伙人',
+      city: '浙江省', years: 13, rating: 4.9,
+      tags: ['合同纠纷', '公司治理', '股权争议'],
+      desc: '专注商事合同与公司法领域，服务过多家上市公司，处理过标的过亿的复杂商事案件。',
+      intro: '高峰律师，华东政法大学民商法博士，杭州天册律师事务所合伙人。执业13年，专注商事合同纠纷和公司法领域，为阿里巴巴、网易等知名企业提供过法律服务。',
+      cases: 450, winRate: '91%',
+      cert: '33101201371234567',
+      honors: ['浙江省优秀律师', '年度最佳商事律师'],
+      services: [
+        { type: '合同审查与起草', desc: '商业合同审查、修改、起草', period: '1-3个工作日', price: '¥2000起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥500/次' },
+        { type: '案件全程代理', desc: '合同纠纷、股权纠纷全程代理', period: '按案件周期', price: '¥15000起' },
+        { type: '法律顾问', desc: '企业常年法律顾问服务', period: '按年签约', price: '¥30000起/年' }
+      ],
+      reviews: [
+        { name: '某上市公司董秘', date: '2025年6月', stars: 5, text: '高律师处理商事纠纷的经验非常丰富，为我们规避了很多潜在风险。' },
+        { name: '沈先生', date: '2025年3月', stars: 5, text: '股权争议纠纷非常棘手，高律师的策略帮我保住了公司的控制权。' }
+      ]
+    },
+    {
+      id: 12,
+      name: '林雅文', surname: '林',
+      firm: '深圳君合律师事务所', title: '专职律师',
+      city: '广东省', years: 5, rating: 4.7,
+      tags: ['消费维权', '网络购物', '个人信息保护'],
+      desc: '互联网时代消费维权先行者，擅长网络购物纠纷、个人信息泄露维权等新型案件。',
+      intro: '林雅文律师，深圳大学法学硕士，深圳君合律师事务所专职律师。虽然是执业5年的新生代律师，但在互联网消费维权领域已经小有名气，处理过多起个人信息保护公益诉讼案件。',
+      cases: 250, winRate: '89%',
+      cert: '44103202181345678',
+      honors: ['深圳市新锐律师'],
+      services: [
+        { type: '诉讼文书代写', desc: '起诉状、投诉函、证据材料整理等', period: '3-5个工作日', price: '¥500起' },
+        { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥100/次' },
+        { type: '案件全程代理', desc: '从投诉到诉讼全程服务', period: '按案件周期', price: '¥3000起' },
+        { type: '公益咨询', desc: '针对简易消费维权问题的免费咨询', period: '即时响应', price: '免费' }
+      ],
+      reviews: [
+        { name: '秦女士', date: '2025年7月', stars: 5, text: '网购被坑了2000多，以为金额小没人管，林律师认真帮我维权，最终全额退款。' },
+        { name: '许先生', date: '2025年5月', stars: 5, text: '个人信息被泄露后一直收到骚扰电话，林律师帮我起诉了相关公司并获得了赔偿。' }
+      ]
+    }
+  ];
+
+  // 合并自定义律师（认证通过的）
+var customLawyersStr = localStorage.getItem('faqiao_custom_lawyers');
+var customLawyers = customLawyersStr ? JSON.parse(customLawyersStr) : [];
+allLawyers = allLawyers.concat(customLawyers);
+
+  // ========== 渲染律师卡片 ==========
+  function renderLawyers(lawyers) {
+    var grid = document.getElementById('lawyer-grid');
+    var html = '';
+    lawyers.forEach(function(l) {
+      var starsHtml = '';
+      for (var i = 0; i < Math.floor(l.rating); i++) { starsHtml += '⭐'; }
+      html +=
+        '<a href="lawyer-detail.html?id=' + l.id + '" style="text-decoration:none;color:inherit;">' +
+          '<div class="lawyer-card">' +
+            '<div class="card-top">' +
+              '<div class="avatar">' + l.surname + '</div>' +
+              '<div>' +
+                '<div class="name">' + l.name + '</div>' +
+                '<div class="title">' + l.title + ' · ' + l.firm + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="tags">' +
+              l.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') +
+            '</div>' +
+            '<div class="desc">' + l.desc + '</div>' +
+            '<div class="card-footer">' +
+              '<span>执业 ' + l.years + ' 年</span>' +
+              '<span class="rating">⭐ ' + l.rating + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</a>';
+    });
+    grid.innerHTML = html;
+  }
+
+  // ========== 筛选功能 ==========
+  function filterLawyers() {
+    var areaSelect = document.getElementById('filter-area');
+    var fieldSelect = document.getElementById('filter-field');
+    var yearsSelect = document.getElementById('filter-years');
+
+    var area = areaSelect ? areaSelect.value : '';
+    var field = fieldSelect ? fieldSelect.value : '';
+    var years = yearsSelect ? yearsSelect.value : '';
+
+    var filtered = allLawyers.filter(function(l) {
+      if (area && area !== '全部地区' && l.city !== area) return false;
+      if (field && field !== '全部领域') {
+        var matchField = false;
+        l.tags.forEach(function(t) { if (t === field) matchField = true; });
+        if (!matchField) return false;
+      }
+      if (years === '3年以下' && l.years >= 3) return false;
+      if (years === '3-5年' && (l.years < 3 || l.years > 5)) return false;
+      if (years === '5-10年' && (l.years < 5 || l.years > 10)) return false;
+      if (years === '10年以上' && l.years < 10) return false;
+      return true;
+    });
+    renderLawyers(filtered);
+  }
+
+  // ========== 初始渲染 ==========
+  renderLawyers(allLawyers);
+
+  // 登录后显示案件池入口
+if (currentUser) {
+  var u = JSON.parse(currentUser);
+  var poolEntry = document.getElementById('case-pool-entry');
+  if (poolEntry) poolEntry.style.display = 'inline';
+}
+
+// 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+</script>
+
+</body>
+</html>

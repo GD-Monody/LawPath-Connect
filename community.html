@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>互助社区 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 页面标题 ===== */
+    .page-header {
+      background: #fff;
+      padding: 24px 60px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-header h2 {
+      font-size: 22px;
+      color: #1a3a5c;
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .btn-new-post {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-new-post:hover {
+      background: #2d6a9f;
+    }
+
+    /* ===== 主体：两栏布局 ===== */
+    .main-content {
+      display: flex;
+      gap: 24px;
+      padding: 24px 60px;
+      max-width: 1200px;
+    }
+
+    /* ===== 左侧：分类板块 ===== */
+    .sidebar {
+      width: 200px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 8px 0;
+      align-self: flex-start;
+    }
+
+    .sidebar .cat-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #1a3a5c;
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 4px;
+    }
+
+    .sidebar .cat-item {
+      display: block;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar .cat-item:hover {
+      background: #f5f7fa;
+      color: #1a3a5c;
+    }
+
+    .sidebar .cat-item.active {
+      background: #eef3f8;
+      color: #1a3a5c;
+      font-weight: bold;
+      border-left-color: #1a3a5c;
+    }
+
+    .sidebar .cat-item .count {
+      float: right;
+      color: #bbb;
+      font-size: 11px;
+    }
+
+    /* ===== 右侧：帖子列表 ===== */
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 发帖表单卡片 */
+    .post-form-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 24px 28px;
+      display: none;
+    }
+
+    .post-form-card.show {
+      display: block;
+    }
+
+    .post-form-card .form-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .btn-submit-post {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-cancel-post {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* 帖子列表卡片 */
+    .post-list-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .post-list-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      font-weight: bold;
+      color: #1a3a5c;
+    }
+
+    .post-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .post-item:hover {
+      background: #fafbfc;
+    }
+
+    .post-item:last-child {
+      border-bottom: none;
+    }
+
+    .post-item .post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #eef3f8;
+      color: #2d6a9f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-right: 14px;
+    }
+
+    .post-item .post-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-item .post-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .post-item .post-meta {
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .post-item .post-meta span {
+      margin-right: 14px;
+    }
+
+    .post-item .post-tag {
+      background: #eef3f8;
+      color: #2d6a9f;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .post-item .post-replies {
+      text-align: center;
+      flex-shrink: 0;
+      margin-left: 14px;
+      min-width: 40px;
+    }
+
+    .post-item .reply-num {
+      font-size: 14px;
+      font-weight: bold;
+      color: #1a3a5c;
+    }
+
+    .post-item .reply-label {
+      font-size: 10px;
+      color: #bbb;
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    /* 登录提示 */
+    .login-tip {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+      font-size: 15px;
+    }
+
+    .login-tip a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 20px;
+    }
+
+    /* 隐藏 */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html" class="active">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    互助社区
+  </div>
+
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <div>
+      <h2>互助社区</h2>
+      <p>分享维权经验，交流法律问题，互助解难题</p>
+    </div>
+    <button class="btn-new-post" id="btn-new-post" onclick="showPostForm()">+ 发布新帖</button>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-content">
+
+    <!-- 左侧：分类 -->
+    <div class="sidebar">
+      <div class="cat-title">案件分类</div>
+      <div class="cat-item active" onclick="filterByCategory('all', this)">全部帖子 <span class="count" id="count-all">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('劳动纠纷', this)">劳动纠纷 <span class="count" id="count-labor">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('婚姻家事', this)">婚姻家事 <span class="count" id="count-marriage">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('消费维权', this)">消费维权 <span class="count" id="count-consumer">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('借贷纠纷', this)">借贷纠纷 <span class="count" id="count-loan">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('房产纠纷', this)">房产纠纷 <span class="count" id="count-house">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('交通事故', this)">交通事故 <span class="count" id="count-traffic">0</span></div>
+      <div class="cat-item" onclick="filterByCategory('其他', this)">其他 <span class="count" id="count-other">0</span></div>
+    </div>
+
+    <!-- 右侧：内容区 -->
+    <div class="content-area">
+      <!-- 发帖表单 -->
+      <div class="post-form-card" id="post-form-card">
+        <div class="form-title">✍️ 发布新帖</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>分类</label>
+            <select id="post-category">
+              <option value="">请选择分类</option>
+              <option>劳动纠纷</option>
+              <option>婚姻家事</option>
+              <option>消费维权</option>
+              <option>借贷纠纷</option>
+              <option>房产纠纷</option>
+              <option>交通事故</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:normal;">
+              <input type="checkbox" id="post-anonymous" style="width:auto;"> 匿名发布
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>标题</label>
+          <input type="text" id="post-title" placeholder="请输入帖子标题">
+        </div>
+        <div class="form-group">
+          <label>内容</label>
+          <textarea id="post-content" placeholder="详细描述您遇到的问题或分享您的维权经验……"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-submit-post" onclick="submitPost()">发布</button>
+          <button class="btn-cancel-post" onclick="hidePostForm()">取消</button>
+        </div>
+      </div>
+
+      <!-- 帖子列表 -->
+      <div class="post-list-card">
+        <div class="post-list-header" id="list-header">全部帖子</div>
+        <div id="post-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    // ========== 初始化假数据 ==========
+    function initDemoPosts() {
+  var version = localStorage.getItem('faqiao_posts_version');
+  if (version === 'v2') return; // 已是新版数据，跳过
+
+  var demoPosts = [
+    {
+      id: 1, category: '劳动纠纷',
+      title: '公司拖欠三个月工资，劳动仲裁需要准备哪些材料？',
+      content: '我在一家小公司上班，从今年4月开始公司就一直拖欠工资，到现在已经三个月了。老板每次都说下个月一起发，但一直拖。我想申请劳动仲裁，请问需要准备哪些材料？没有签劳动合同会不会有影响？',
+      author: '打工人小王', anonymous: false, time: '2025-07-25', replies: 2,
+      repliesList: [
+        { author: '张明远律师', time: '2025-07-25 14:30', text: '您好，根据《劳动合同法》第八十五条，用人单位拖欠劳动报酬的，劳动行政部门责令限期支付，逾期不支付的还需加付赔偿金。申请劳动仲裁需要准备：1.身份证复印件；2.工资银行流水或微信转账记录；3.考勤记录；4.劳动合同（如有）。没有签劳动合同不影响仲裁，反而用人单位可能面临双倍工资的处罚。' },
+        { author: '法律小助手', time: '2025-07-26 09:15', text: '补充一下：您还可以拨打12333劳动保障热线进行投诉，或者向当地劳动监察大队举报。建议先收集好所有证据再去仲裁，成功率会高很多。' }
+      ]
+    },
+    {
+      id: 2, category: '婚姻家事',
+      title: '离婚时孩子抚养权怎么判？男方长期在外地工作',
+      content: '结婚六年，孩子五岁。男方长期在外地工作，一年回家不到一个月，孩子一直是我一个人在带。现在想离婚，请问抚养权一般会判给谁？我需要收集哪些证据？',
+      author: '匿名用户', anonymous: true, time: '2025-07-24', replies: 3,
+      repliesList: [
+        { author: '李婉婷律师', time: '2025-07-24 16:20', text: '根据《民法典》第一千零八十四条，离婚后不满两周岁的子女以母亲直接抚养为原则；已满两周岁不满八周岁的，按照最有利于未成年子女的原则判决。法院会综合考虑父母双方的抚养能力、抚养条件、子女意愿等因素。您需要收集：1.男方长期在外地工作的证明；2.您独自照顾孩子的证据（邻居证言、学校接送记录、日常照片等）；3.稳定的收入证明和居住证明。您的条件比较有利。' },
+        { author: '匿名用户', time: '2025-07-24 20:10', text: '我是过来人，情况和你差不多。最终我拿到了抚养权，最关键的是证明孩子一直由你照顾，法官很看重这个。加油！' },
+        { author: '赵雅琴律师', time: '2025-07-25 10:40', text: '补充一点：建议先通过调解协商抚养权问题，诉讼是最后手段。可以尝试请专业家事调解员介入，这样对孩子的影响最小。' }
+      ]
+    },
+    {
+      id: 3, category: '消费维权',
+      title: '网购商品质量问题，商家拒绝退货怎么办？',
+      content: '在某电商平台买了一个手机，收到后发现屏幕有坏点，联系商家要求退货，商家以"已拆封"为由拒绝。我已经申请平台介入但还没结果，请问下一步该怎么办？',
+      author: '消费者小李', anonymous: false, time: '2025-07-23', replies: 2,
+      repliesList: [
+        { author: '王志刚律师', time: '2025-07-23 15:10', text: '根据《消费者权益保护法》第二十五条，经营者采用网络、电视、电话等方式销售商品，消费者有权自收到商品之日起七日内退货且无需说明理由（除特殊商品外）。手机不属于"不宜退货"的特殊商品，商家以"已拆封"为由拒绝退货是不合法的。您可以：1.保留商品照片和聊天记录作为证据；2.在12315平台投诉；3.如果金额较大可以起诉。' },
+        { author: '消费者小李', time: '2025-07-23 18:30', text: '谢谢律师！刚刚平台客服已经介入，看到我发的证据后判定支持退货退款，问题解决了！' }
+      ]
+    },
+    {
+      id: 4, category: '借贷纠纷',
+      title: '朋友借了5万块不还，只有微信转账记录能起诉吗？',
+      content: '去年一个朋友说急用钱，我通过微信转了5万给他，没有写借条。现在一年过去了，他一直找各种理由不还。我只有微信转账记录和聊天记录，这些能作为证据起诉吗？胜诉的概率大吗？',
+      author: '匿名用户', anonymous: true, time: '2025-07-22', replies: 2,
+      repliesList: [
+        { author: '刘建民律师', time: '2025-07-22 11:20', text: '根据《最高人民法院关于审理民间借贷案件适用法律若干问题的规定》，微信转账记录和聊天记录可以作为电子证据使用。关键是要能证明：1.这笔钱是借款而非赠与；2.双方有借贷的合意。建议您保存好所有聊天记录（特别是提到"借款""还钱"等内容的消息），截屏备份。如果聊天记录中对方承认了欠款事实，胜诉概率较高。' },
+        { author: '法律达人', time: '2025-07-22 15:45', text: '建议先发一封正式的催收函（微信发也行），给对方一个还款期限。如果期限到了还不还，就可以去法院起诉了。诉讼时效是三年，从你知道权利受损时算起，别拖太久。' }
+      ]
+    },
+    {
+      id: 5, category: '房产纠纷',
+      title: '买房定金交了才发现房子被抵押了，能退吗？',
+      content: '看中一套二手房，交了5万定金，签了意向协议。后来通过房产中心查询，发现房子已经被抵押给了银行。中介之前完全没有告知这个情况。请问定金能退吗？中介有没有责任？',
+      author: '买房新手', anonymous: false, time: '2025-07-21', replies: 2,
+      repliesList: [
+        { author: '陈思涵律师', time: '2025-07-21 09:50', text: '根据《民法典》相关规定，出卖人故意隐瞒房屋已抵押的事实，导致买受人在违背真实意思的情况下订立合同的，买受人有权请求撤销合同并主张返还已付购房款及利息、赔偿损失。您的情况属于卖方欺诈，定金应当双倍返还。中介如果明知抵押情况而未告知，也应承担相应责任。建议先协商，协商不成可向住建部门投诉或提起诉讼。' },
+        { author: '买房新手', time: '2025-07-21 14:00', text: '感谢提醒！已经联系了中介和房主，对方同意全额退还定金并补偿2000元。问题解决得很顺利。' }
+      ]
+    },
+    {
+      id: 6, category: '交通事故',
+      title: '被电动车撞伤，对方全责但没有保险，怎么索赔？',
+      content: '上个月在路口被一辆外卖电动车撞倒，交警判定对方全责。但骑手说他没有保险，公司也推卸责任。我医药费花了6000多，现在对方电话都不接了。请问我该怎么办？',
+      author: '匿名用户', anonymous: true, time: '2025-07-20', replies: 2,
+      repliesList: [
+        { author: '郑国栋律师', time: '2025-07-20 10:30', text: '外卖骑手在执行工作任务期间发生的交通事故，用人单位应当承担赔偿责任。即使骑手没有保险，您也可以直接向外卖平台或配送公司索赔。具体步骤：1.保留好交警事故认定书、医院诊断证明、医疗费发票等所有证据；2.向平台投诉并要求提供配送公司信息；3.如果协商无果，直接起诉外卖平台及其合作配送公司。不要只盯着骑手个人，要向公司主张权利。' },
+        { author: '匿名用户', time: '2025-07-20 19:10', text: '同遭遇！我之前的案子就是起诉了平台，最后平台赔了全部医药费加误工费。一定要保留好证据，特别是交警的事故认定书，那个是关键！' }
+      ]
+    },
+    {
+      id: 7, category: '劳动纠纷',
+      title: '试用期被辞退，没有提前通知，能要求赔偿吗？',
+      content: '入职一家公司两个月，还在试用期。上周五下班前突然被HR叫去说"不合适"让我当天走人，没有提前通知，也没有书面说明理由。请问这合法吗？我能要求赔偿吗？',
+      author: '职场新人', anonymous: false, time: '2025-07-19', replies: 2,
+      repliesList: [
+        { author: '张明远律师', time: '2025-07-19 16:00', text: '根据《劳动合同法》第三十九条，劳动者在试用期间被证明不符合录用条件的，用人单位可以解除劳动合同。但用人单位需要举证证明您"不符合录用条件"，且该录用条件应当在入职时已经向您明确告知。如果公司无法证明，就属于违法解除。您可以要求：1.继续履行劳动合同；或者2.要求支付赔偿金（经济补偿金的两倍）。建议先与公司协商，要求出具书面解除通知和理由说明。' },
+        { author: '职场新人', time: '2025-07-20 08:30', text: '谢谢张律师！按照您的建议和HR沟通了，他们拿不出具体的考核标准，最后协商赔了我一个月工资。问题解决了！' }
+      ]
+    },
+    {
+      id: 8, category: '其他',
+      title: '楼上漏水导致我家天花板发霉，对方不赔偿怎么办？',
+      content: '楼上住户装修导致水管破裂，水漏到我家，客厅天花板全部发霉脱落。找对方协商，对方态度很差说不是他的责任。找物业也推来推去。这种情况该怎么维权？',
+      author: '匿名用户', anonymous: true, time: '2025-07-18', replies: 2,
+      repliesList: [
+        { author: '陈思涵律师', time: '2025-07-18 14:20', text: '根据《民法典》第二百九十六条，不动产权利人因用水、排水、通行、铺设管线等利用相邻不动产的，应当尽量避免对相邻的不动产权利人造成损害。楼上装修导致漏水属于典型的相邻权纠纷。维权步骤：1.先请物业或社区调解委员会出面调解；2.如果调解不成，收集好现场照片、物业出具的漏水原因证明、维修报价单等证据；3.向法院起诉要求对方赔偿损失并恢复原状。' },
+        { author: '法律小助手', time: '2025-07-19 11:00', text: '建议尽快处理，时间久了霉菌会扩散，损失会更大。可以先自行找维修师傅修复并留好票据，后续再向楼上索赔。法院对这种邻里纠纷一般都会支持受害方的。' }
+      ]
+    }
+  ];
+
+  localStorage.setItem('faqiao_posts', JSON.stringify(demoPosts));
+  localStorage.setItem('faqiao_posts_version', 'v2');
+}
+
+    initDemoPosts();
+
+    var currentCategory = 'all';
+
+    // ========== 渲染帖子列表 ==========
+    function renderPosts() {
+      var postsStr = localStorage.getItem('faqiao_posts');
+      var posts = postsStr ? JSON.parse(postsStr) : [];
+
+      // 筛选
+      var filtered = posts;
+      if (currentCategory !== 'all') {
+        filtered = posts.filter(function(p) { return p.category === currentCategory; });
+      }
+
+      var listEl = document.getElementById('post-list');
+      if (filtered.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">📭 该板块暂无帖子，快来发布第一条吧</div>';
+      } else {
+        var html = '';
+        filtered.forEach(function(p) {
+          html +=
+            '<a href="post-detail.html?id=' + p.id + '" class="post-item">' +
+              '<div class="post-avatar">' + (p.anonymous ? '匿' : p.author.charAt(0)) + '</div>' +
+              '<div class="post-info">' +
+                '<div class="post-title">' + p.title + '</div>' +
+                '<div class="post-meta">' +
+                  '<span>👤 ' + p.author + '</span>' +
+                  '<span>🕒 ' + p.time + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<span class="post-tag">' + p.category + '</span>' +
+              '<div class="post-replies">' +
+                '<div class="reply-num">' + p.replies + '</div>' +
+                '<div class="reply-label">回复</div>' +
+              '</div>' +
+            '</a>';
+        });
+        listEl.innerHTML = html;
+      }
+
+      // 更新分类计数
+      updateCategoryCounts(posts);
+    }
+
+    // ========== 更新分类计数 ==========
+    function updateCategoryCounts(posts) {
+      var map = { 'all': posts.length };
+      posts.forEach(function(p) {
+        map[p.category] = (map[p.category] || 0) + 1;
+      });
+      document.getElementById('count-all').textContent = map['all'] || 0;
+      document.getElementById('count-labor').textContent = map['劳动纠纷'] || 0;
+      document.getElementById('count-marriage').textContent = map['婚姻家事'] || 0;
+      document.getElementById('count-consumer').textContent = map['消费维权'] || 0;
+      document.getElementById('count-loan').textContent = map['借贷纠纷'] || 0;
+      document.getElementById('count-house').textContent = map['房产纠纷'] || 0;
+      document.getElementById('count-traffic').textContent = map['交通事故'] || 0;
+      document.getElementById('count-other').textContent = map['其他'] || 0;
+    }
+
+    // ========== 分类筛选 ==========
+    function filterByCategory(cat, el) {
+      currentCategory = cat;
+      // 更新高亮
+      var items = document.querySelectorAll('.sidebar .cat-item');
+      items.forEach(function(i) { i.classList.remove('active'); });
+      el.classList.add('active');
+      // 更新标题
+      document.getElementById('list-header').textContent = cat === 'all' ? '全部帖子' : cat;
+      renderPosts();
+    }
+
+    // ========== 发帖表单 ==========
+    function showPostForm() {
+      document.getElementById('post-form-card').classList.add('show');
+    }
+
+    function hidePostForm() {
+      document.getElementById('post-form-card').classList.remove('show');
+      document.getElementById('post-category').value = '';
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-content').value = '';
+      document.getElementById('post-anonymous').checked = false;
+    }
+
+    function submitPost() {
+      var category = document.getElementById('post-category').value;
+      var title = document.getElementById('post-title').value;
+      var content = document.getElementById('post-content').value;
+      var anonymous = document.getElementById('post-anonymous').checked;
+
+      if (!category || !title || !content) {
+        alert('请填写分类、标题和内容');
+        return;
+      }
+
+      var currentUser = localStorage.getItem('faqiao_currentUser');
+      var author = '匿名用户';
+      if (!anonymous && currentUser) {
+        author = JSON.parse(currentUser).phone;
+      }
+
+      var postsStr = localStorage.getItem('faqiao_posts');
+      var posts = postsStr ? JSON.parse(postsStr) : [];
+
+      var newPost = {
+        id: Date.now(),
+        category: category,
+        title: title,
+        content: content,
+        author: author,
+        anonymous: anonymous,
+        time: new Date().toLocaleDateString(),
+        replies: 0
+      };
+
+      posts.unshift(newPost);
+      localStorage.setItem('faqiao_posts', JSON.stringify(posts));
+
+      alert('发布成功！');
+      hidePostForm();
+      renderPosts();
+    }
+
+    // ========== 登录状态 ==========
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    // 管理员模式检测
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var entry = document.getElementById('admin-entry');
+      if (entry) entry.style.display = 'inline';
+    }
+    var userBtn = document.getElementById('nav-user-btn');
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+    }
+
+    // ========== 初始渲染 ==========
+    renderPosts();
+
+    // 登录后显示案件池入口
+    if (currentUser) {
+      var u = JSON.parse(currentUser);
+      var poolEntry = document.getElementById('case-pool-entry');
+      if (poolEntry) poolEntry.style.display = 'inline';
+    }
+
+    // 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+
+  </script>
+
+</body>
+</html>

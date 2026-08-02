@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>确认下单 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 主体 ===== */
+    .main-content {
+      max-width: 750px;
+      margin: 24px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* ===== 步骤条 ===== */
+    .steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .step.active {
+      color: #1a3a5c;
+      font-weight: bold;
+    }
+
+    .step .dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 6px;
+      font-size: 11px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .step.active .dot {
+      border-color: #2d6a9f;
+      background: #2d6a9f;
+      color: #fff;
+    }
+
+    .step-line {
+      width: 50px;
+      height: 2px;
+      background: #ddd;
+      margin: 0 10px;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      padding: 28px 32px;
+      margin-bottom: 18px;
+    }
+
+    .card .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== 服务摘要 ===== */
+    .service-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: #f8fafb;
+      border-radius: 8px;
+    }
+
+    .service-summary .s-name {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a3a5c;
+    }
+
+    .service-summary .s-lawyer {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .service-summary .s-price {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e8a838;
+    }
+
+    /* ===== 表单 ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .form-group label .required {
+      color: #f56c6c;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    /* ===== 提交按钮 ===== */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-submit {
+      flex: 1;
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+      background: #2d6a9f;
+    }
+
+    .btn-back {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 13px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .agreement {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .agreement a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    /* ===== 成功页 ===== */
+    .success-box {
+      display: none;
+      text-align: center;
+    }
+
+    .success-box.show {
+      display: block;
+    }
+
+    .success-box .s-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+
+    .success-box .s-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #67c23a;
+      margin-bottom: 6px;
+    }
+
+    .success-box .s-desc {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.8;
+    }
+
+    .success-box .s-order-id {
+      background: #f0f9eb;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #67c23a;
+      display: inline-block;
+      margin: 8px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    /* ===== 登录提示 ===== */
+    .login-tip {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+      font-size: 15px;
+    }
+
+    .login-tip a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    <a href="lawyer.html">找律师</a>
+    <span>›</span>
+    <a href="#" id="bread-lawyer">律师</a>
+    <span>›</span>
+    确认下单
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-content" id="main-content"></div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    var currentUserStr = localStorage.getItem('faqiao_currentUser');
+    var currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+    var userBtn = document.getElementById('nav-user-btn');
+    var container = document.getElementById('main-content');
+
+    // ========== 导航栏登录状态 ==========
+    if (currentUser) {
+      userBtn.textContent = '👤 ' + currentUser.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.href = 'index.html';
+      };
+
+      var poolEntry = document.getElementById('case-pool-entry');
+      if (poolEntry) poolEntry.style.display = 'inline';
+
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var adminEntry = document.getElementById('admin-entry');
+      if (adminEntry) adminEntry.style.display = 'inline';
+    }
+
+    // ========== 读取选中的服务 ==========
+    var serviceStr = localStorage.getItem('faqiao_selectedService');
+    var service = serviceStr ? JSON.parse(serviceStr) : null;
+
+    if (!service) {
+      container.innerHTML = '<div class="login-tip">⚠️ 未选择服务，请从<a href="lawyer.html">律师详情页</a>进入</div>';
+    } else {
+      // 面包屑律师名
+      document.getElementById('bread-lawyer').textContent = service.lawyerName;
+
+      renderOrderForm();
+    }
+
+    function renderOrderForm() {
+      var html = '';
+
+      // 步骤条
+      html +=
+        '<div class="steps">' +
+          '<div class="step active"><div class="dot">1</div>确认订单</div>' +
+          '<div class="step-line"></div>' +
+          '<div class="step"><div class="dot">2</div>填写信息</div>' +
+          '<div class="step-line"></div>' +
+          '<div class="step"><div class="dot">3</div>提交成功</div>' +
+        '</div>';
+
+      // 服务摘要
+      html +=
+        '<div class="card">' +
+          '<div class="card-title">📋 已选服务</div>' +
+          '<div class="service-summary">' +
+            '<div>' +
+              '<div class="s-name">' + service.serviceType + '</div>' +
+              '<div class="s-lawyer">律师：' + service.lawyerName + ' · ' + service.lawyerFirm + '</div>' +
+              '<div class="s-lawyer">交付周期：' + service.servicePeriod + '</div>' +
+            '</div>' +
+            '<div class="s-price">' + service.servicePrice + '</div>' +
+          '</div>' +
+        '</div>';
+
+      // 用户信息表单
+      html +=
+        '<div class="card">' +
+          '<div class="card-title">👤 联系信息与案件详情</div>' +
+
+          '<div class="form-row">' +
+            '<div class="form-group"><label>您的姓名 <span class="required">*</span></label><input type="text" id="order-name" placeholder="请输入真实姓名"></div>' +
+            '<div class="form-group"><label>联系电话 <span class="required">*</span></label><input type="text" id="order-phone" placeholder="请输入手机号" value=""></div>' +
+          '</div>' +
+
+          '<div class="form-group"><label>案件标题 <span class="required">*</span></label><input type="text" id="order-title" placeholder="简明扼要描述您的案件"></div>' +
+
+          '<div class="form-group"><label>案件详情 <span class="required">*</span></label><textarea id="order-desc" placeholder="请详细描述案件背景、涉及金额、已有证据、时间节点等信息，便于律师快速了解情况……"></textarea></div>' +
+
+          '<div class="form-group"><label>您的诉求 <span class="required">*</span></label><textarea id="order-demand" placeholder="您希望通过法律服务达到什么目的？如：追回拖欠工资、争取孩子抚养权、要求对方赔偿损失等"></textarea></div>' +
+
+          '<div class="btn-row">' +
+            '<button class="btn-back" onclick="history.back()">← 返回</button>' +
+            '<button class="btn-submit" onclick="submitOrder()">✅ 确认下单</button>' +
+          '</div>' +
+
+          '<div class="agreement">提交即表示同意 <a href="#">《法律服务协议》</a>，平台将为您联系律师确认服务细节</div>' +
+        '</div>';
+
+        // 自动填入登录用户的手机号
+        setTimeout(function() {
+            var phoneInput = document.getElementById('order-phone');
+            if (phoneInput && currentUser) {
+                phoneInput.value = currentUser.phone;
+            }
+            }, 100);
+
+      container.innerHTML = html;
+    }
+
+    // ========== 提交订单 ==========
+    function submitOrder() {
+      var name = document.getElementById('order-name').value.trim();
+      var phone = document.getElementById('order-phone').value.trim();
+      var title = document.getElementById('order-title').value.trim();
+      var desc = document.getElementById('order-desc').value.trim();
+      var demand = document.getElementById('order-demand').value.trim();
+
+      if (!name || !phone || !title || !desc || !demand) {
+        alert('请填写所有必填项');
+        return;
+      }
+
+      // 存入订单列表
+      var ordersStr = localStorage.getItem('faqiao_orders');
+      var orders = ordersStr ? JSON.parse(ordersStr) : [];
+      var newOrder = {
+        id: Date.now(),
+        lawyerName: service.lawyerName,
+        lawyerFirm: service.lawyerFirm,
+        serviceType: service.serviceType,
+        servicePrice: service.servicePrice,
+        servicePeriod: service.servicePeriod,
+        userName: name,
+        userPhone: currentUser ? currentUser.phone : phone,
+        title: title,
+        desc: desc,
+        demand: demand,
+        status: '待律师确认',
+        time: new Date().toLocaleDateString()
+      };
+      orders.unshift(newOrder);
+      localStorage.setItem('faqiao_orders', JSON.stringify(orders));
+
+      // 展示成功页面
+      var html =
+        '<div class="card success-box show">' +
+          '<div class="s-icon">✅</div>' +
+          '<div class="s-title">下单成功！</div>' +
+          '<div class="s-desc">' +
+            '您的订单已提交，律师将在24小时内确认。<br>' +
+            '订单编号：</div>' +
+          '<div class="s-order-id">' + newOrder.id + '</div>' +
+          '<div class="s-desc" style="margin-top:8px;">' +
+            '服务：' + service.serviceType + '<br>' +
+            '律师：' + service.lawyerName + ' · ' + service.lawyerFirm + '<br>' +
+            '金额：' + service.servicePrice +
+          '</div>' +
+          '<div style="margin-top:16px;">' +
+            '<a href="profile.html" style="background:#1a3a5c;color:#fff;padding:10px 24px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:bold;">查看我的订单 →</a>' +
+          '</div>' +
+        '</div>';
+      container.innerHTML = html;
+    }
+  </script>
+
+</body>
+</html>

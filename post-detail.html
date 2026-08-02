@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帖子详情 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 主体 ===== */
+    .main-content {
+      max-width: 800px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    /* ===== 帖子正文卡片 ===== */
+    .post-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .post-card .post-header {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .post-card .post-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 10px;
+    }
+
+    .post-card .post-meta {
+      font-size: 13px;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .post-card .post-tag {
+      background: #eef3f8;
+      color: #2d6a9f;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .post-card .post-body {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.9;
+      white-space: pre-wrap;
+    }
+
+    /* ===== 回复区域 ===== */
+    .replies-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 24px 32px;
+      margin-bottom: 20px;
+    }
+
+    .replies-card .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .reply-item {
+      padding: 16px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .reply-item:last-child {
+      border-bottom: none;
+    }
+
+    .reply-item .reply-author {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .reply-item .reply-author .reply-time {
+      font-weight: normal;
+      color: #bbb;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .reply-item .reply-text {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    /* ===== 发表回复 ===== */
+    .reply-form-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 24px 32px;
+      margin-bottom: 20px;
+    }
+
+    .reply-form-card .form-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 12px;
+    }
+
+    .reply-form-card textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 12px;
+    }
+
+    .reply-form-card textarea:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .reply-form-card .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-reply {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-reply:hover {
+      background: #2d6a9f;
+    }
+
+    .reply-form-card .login-hint {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .reply-form-card .login-hint a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    /* 错误状态 */
+    .error-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      font-size: 15px;
+    }
+
+    .error-state a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html" class="active">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    <a href="community.html">互助社区</a>
+    <span>›</span>
+    <span id="breadcrumb-title">帖子详情</span>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-content" id="main-content"></div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    // ========== 获取帖子 ==========
+    function getQueryParam(name) {
+      var params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    var postId = parseInt(getQueryParam('id'));
+    if (!postId) {
+      document.getElementById('main-content').innerHTML =
+        '<div class="error-state">⚠️ 帖子不存在<br><a href="community.html">返回社区</a></div>';
+    } else {
+      var postsStr = localStorage.getItem('faqiao_posts');
+      var posts = postsStr ? JSON.parse(postsStr) : [];
+      var post = posts.find(function(p) { return p.id === postId; });
+
+      if (!post) {
+        document.getElementById('main-content').innerHTML =
+          '<div class="error-state">⚠️ 帖子不存在<br><a href="community.html">返回社区</a></div>';
+      } else {
+        // 确保有 repliesList 字段（兼容旧数据）
+        if (!post.repliesList) post.repliesList = [];
+
+        renderPage(post, posts);
+      }
+    }
+
+    function renderPage(post, posts) {
+      // 面包屑
+      document.getElementById('breadcrumb-title').textContent = post.title;
+
+      // 帖子正文
+      var html = '';
+      html +=
+        '<div class="post-card">' +
+          '<div class="post-header">' +
+            '<div class="post-title">' + post.title + '</div>' +
+            '<div class="post-meta">' +
+              '<span>👤 ' + post.author + '</span>' +
+              '<span>🕒 ' + post.time + '</span>' +
+              '<span class="post-tag">' + post.category + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="post-body">' + post.content + '</div>' +
+        '</div>';
+
+      // 回复列表
+      html += '<div class="replies-card">';
+      html += '<div class="section-title">💬 回复（<span id="reply-count">' + (post.repliesList ? post.repliesList.length : 0) + '</span>）</div>';
+
+      if (!post.repliesList || post.repliesList.length === 0) {
+        html += '<div class="empty-state">暂无回复，快来发表第一条评论吧</div>';
+      } else {
+        post.repliesList.forEach(function(r) {
+          html +=
+            '<div class="reply-item">' +
+              '<div class="reply-author">' + r.author + '<span class="reply-time">' + r.time + '</span></div>' +
+              '<div class="reply-text">' + r.text + '</div>' +
+            '</div>';
+        });
+      }
+      html += '</div>';
+
+      // 发表回复
+      var currentUser = localStorage.getItem('faqiao_currentUser');
+      html += '<div class="reply-form-card">';
+      html += '<div class="form-title">✍️ 发表回复</div>';
+      if (currentUser) {
+        html +=
+          '<textarea id="reply-text" placeholder="写下你的回复……"></textarea>' +
+          '<div class="btn-row">' +
+            '<button class="btn-reply" onclick="submitReply(' + post.id + ')">发表回复</button>' +
+          '</div>';
+      } else {
+        html += '<div class="login-hint">请先 <a href="login.html">登录</a> 后发表回复</div>';
+      }
+      html += '</div>';
+
+      document.getElementById('main-content').innerHTML = html;
+    }
+
+    // ========== 发表回复 ==========
+    function submitReply(postId) {
+      var text = document.getElementById('reply-text').value.trim();
+      if (!text) {
+        alert('请输入回复内容');
+        return;
+      }
+
+      var currentUser = JSON.parse(localStorage.getItem('faqiao_currentUser'));
+      var postsStr = localStorage.getItem('faqiao_posts');
+      var posts = JSON.parse(postsStr);
+
+      var post = posts.find(function(p) { return p.id === postId; });
+      if (!post) return;
+
+      if (!post.repliesList) post.repliesList = [];
+
+      post.repliesList.push({
+        author: currentUser.phone,
+        time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+        text: text
+      });
+      post.replies = post.repliesList.length;
+
+      localStorage.setItem('faqiao_posts', JSON.stringify(posts));
+      alert('回复成功！');
+      location.reload();
+    }
+
+    // ========== 登录状态 ==========
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    // 管理员模式检测
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var entry = document.getElementById('admin-entry');
+      if (entry) entry.style.display = 'inline';
+    }
+    var userBtn = document.getElementById('nav-user-btn');
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+    }
+
+    // 登录后显示案件池入口
+if (currentUser) {
+  var u = JSON.parse(currentUser);
+  var poolEntry = document.getElementById('case-pool-entry');
+  if (poolEntry) poolEntry.style.display = 'inline';
+}
+
+// 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+  </script>
+
+</body>
+</html>

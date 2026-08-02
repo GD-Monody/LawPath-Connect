@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>案件发布 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 页面标题 ===== */
+    .page-header {
+      background: #fff;
+      padding: 30px 60px 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .page-header h2 {
+      font-size: 24px;
+      color: #1a3a5c;
+      margin-bottom: 6px;
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: #999;
+    }
+
+    /* ===== 表单区域 ===== */
+    .form-container {
+      max-width: 800px;
+      margin: 32px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 40px 48px;
+    }
+
+    .form-section {
+      margin-bottom: 28px;
+    }
+
+    .form-section .section-label {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    /* 隐私设置 - 三种卡片式选择 */
+    .privacy-options {
+      display: flex;
+      gap: 12px;
+    }
+
+    .privacy-card {
+      flex: 1;
+      text-align: center;
+      padding: 16px 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .privacy-card:hover {
+      border-color: #2d6a9f;
+    }
+
+    .privacy-card.selected {
+      border-color: #1a3a5c;
+      background: #eef3f8;
+    }
+
+    .privacy-card .icon {
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .privacy-card .p-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .privacy-card .p-hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* 预算范围 */
+    .budget-range {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .budget-range input {
+      flex: 1;
+    }
+
+    .budget-range .dash {
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* 提交按钮 */
+    .btn-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .btn-submit {
+      flex: 1;
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+      background: #2d6a9f;
+    }
+
+    .btn-draft {
+      background: #fff;
+      color: #1a3a5c;
+      border: 2px solid #1a3a5c;
+      padding: 14px 36px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-draft:hover {
+      background: #f5f7fa;
+    }
+
+    /* 提示条 */
+    .login-tip {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+      font-size: 15px;
+    }
+
+    .login-tip a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html" class="active">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    案件发布
+  </div>
+
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <h2>发布案件</h2>
+    <p>填写案件信息，平台将为您精准匹配专业律师</p>
+  </div>
+
+  <!-- 未登录提示 -->
+  <div class="form-container" id="tip-box" style="display:none;">
+    <div class="login-tip">
+      <p>🔒 请先 <a href="login.html">登录</a> 后再发布案件</p>
+    </div>
+  </div>
+
+  <!-- 表单 -->
+  <div class="form-container" id="publish-form">
+    <!-- 基本信息 -->
+    <div class="form-section">
+      <div class="section-label">📌 基本信息</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>案件类型 *</label>
+          <select id="case-type">
+            <option value="">请选择案件类型</option>
+            <option>劳动纠纷</option>
+            <option>婚姻家事</option>
+            <option>借贷纠纷</option>
+            <option>房产纠纷</option>
+            <option>消费维权</option>
+            <option>合同纠纷</option>
+            <option>交通事故</option>
+            <option>刑事辩护</option>
+            <option>知识产权</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>所在地区 *</label>
+          <select id="case-area">
+        <option value="">请选择地区</option>
+        
+        <optgroup label="华北地区">
+          <option>北京市</option>
+          <option>天津市</option>
+          <option>河北省</option>
+          <option>山西省</option>
+          <option>内蒙古自治区</option>
+        </optgroup>
+        
+        <optgroup label="东北地区">
+          <option>辽宁省</option>
+          <option>吉林省</option>
+          <option>黑龙江省</option>
+        </optgroup>
+        
+        <optgroup label="华东地区">
+          <option>上海市</option>
+          <option>江苏省</option>
+          <option>浙江省</option>
+          <option>安徽省</option>
+          <option>福建省</option>
+          <option>江西省</option>
+          <option>山东省</option>
+        </optgroup>
+        
+        <optgroup label="华中地区">
+          <option>河南省</option>
+          <option>湖北省</option>
+          <option>湖南省</option>
+        </optgroup>
+        
+        <optgroup label="华南地区">
+          <option>广东省</option>
+          <option>广西壮族自治区</option>
+          <option>海南省</option>
+        </optgroup>
+        
+        <optgroup label="西南地区">
+          <option>重庆市</option>
+          <option>四川省</option>
+          <option>贵州省</option>
+          <option>云南省</option>
+          <option>西藏自治区</option>
+        </optgroup>
+        
+        <optgroup label="西北地区">
+          <option>陕西省</option>
+          <option>甘肃省</option>
+          <option>青海省</option>
+          <option>宁夏回族自治区</option>
+          <option>新疆维吾尔自治区</option>
+        </optgroup>
+        
+        <optgroup label="其他">
+          <option>其他</option>
+        </optgroup>
+      </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>案件标题 *</label>
+        <input type="text" id="case-title" placeholder="简明扼要描述案件，如：公司拖欠工资3个月未发">
+      </div>
+
+      <div class="form-group">
+        <label>案件详情 *</label>
+        <textarea id="case-desc" placeholder="请详细描述案件背景、涉及金额、时间节点、已有证据等信息……"></textarea>
+      </div>
+    </div>
+
+    <!-- 诉求与预算 -->
+    <div class="form-section">
+      <div class="section-label">🎯 诉求与预算</div>
+
+      <div class="form-group">
+        <label>您的诉求 *</label>
+        <textarea id="case-demand" placeholder="您希望通过法律服务达到什么目的？如：追回拖欠工资、争取孩子抚养权、要求对方赔偿损失等"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>预算范围</label>
+        <div class="budget-range">
+          <input type="text" id="budget-min" placeholder="最低预算">
+          <span class="dash">—</span>
+          <input type="text" id="budget-max" placeholder="最高预算">
+          <span style="font-size:13px;color:#999;">元</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 隐私设置 -->
+    <div class="form-section">
+      <div class="section-label">🔒 隐私设置</div>
+      <div class="privacy-options">
+        <div class="privacy-card selected" onclick="selectPrivacy(this, 'public')">
+          <div class="icon">🌐</div>
+          <div class="p-label">公开</div>
+          <div class="p-hint">所有人可见</div>
+        </div>
+        <div class="privacy-card" onclick="selectPrivacy(this, 'lawyer-only')">
+          <div class="icon">⚖️</div>
+          <div class="p-label">仅律师可见</div>
+          <div class="p-hint">认证律师可查看</div>
+        </div>
+        <div class="privacy-card" onclick="selectPrivacy(this, 'private')">
+          <div class="icon">🔐</div>
+          <div class="p-label">完全私密</div>
+          <div class="p-hint">仅自己可见</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 按钮 -->
+    <div class="btn-row">
+      <button class="btn-submit" onclick="submitCase()">✅ 发布案件</button>
+      <button class="btn-draft" onclick="alert('草稿已保存（演示模式）')">💾 保存草稿</button>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    // 隐私选择
+    var selectedPrivacy = 'public';
+
+    function selectPrivacy(el, type) {
+      var cards = document.querySelectorAll('.privacy-card');
+      cards.forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      selectedPrivacy = type;
+    }
+
+    // 提交案件
+    function submitCase() {
+      var type = document.getElementById('case-type').value;
+      var area = document.getElementById('case-area').value;
+      var title = document.getElementById('case-title').value;
+      var desc = document.getElementById('case-desc').value;
+      var demand = document.getElementById('case-demand').value;
+      var budgetMin = document.getElementById('budget-min').value;
+      var budgetMax = document.getElementById('budget-max').value;
+
+      if (!type || !area || !title || !desc || !demand) {
+        alert('请填写所有必填项（标 * 的字段）');
+        return;
+      }
+
+      // 读取已有案件列表
+      var casesStr = localStorage.getItem('faqiao_cases');
+      var cases = casesStr ? JSON.parse(casesStr) : [];
+
+      var newCase = {
+        id: Date.now(),
+        type: type,
+        area: area,
+        title: title,
+        desc: desc,
+        demand: demand,
+        budgetMin: budgetMin || '未设定',
+        budgetMax: budgetMax || '未设定',
+        privacy: selectedPrivacy,
+        publisher: currentUser ? currentUser.phone : '匿名用户',
+        time: new Date().toLocaleDateString()
+      };
+
+      cases.unshift(newCase);
+      localStorage.setItem('faqiao_cases', JSON.stringify(cases));
+
+      alert('案件发布成功！');
+      // 清空表单
+      document.getElementById('case-type').value = '';
+      document.getElementById('case-area').value = '';
+      document.getElementById('case-title').value = '';
+      document.getElementById('case-desc').value = '';
+      document.getElementById('case-demand').value = '';
+      document.getElementById('budget-min').value = '';
+      document.getElementById('budget-max').value = '';
+    }
+
+    // 登录状态
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    // 管理员模式检测
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var entry = document.getElementById('admin-entry');
+      if (entry) entry.style.display = 'inline';
+    }
+    var userBtn = document.getElementById('nav-user-btn');
+    var tipBox = document.getElementById('tip-box');
+    var publishForm = document.getElementById('publish-form');
+
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+      // 显示表单，隐藏提示
+      tipBox.style.display = 'none';
+      publishForm.style.display = 'block';
+    } else {
+      // 隐藏表单，显示提示
+      tipBox.style.display = 'block';
+      publishForm.style.display = 'none';
+    }
+
+    // 登录后显示案件池入口
+if (currentUser) {
+  var u = JSON.parse(currentUser);
+  var poolEntry = document.getElementById('case-pool-entry');
+  if (poolEntry) poolEntry.style.display = 'inline';
+}
+
+// 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+  </script>
+
+</body>
+</html>

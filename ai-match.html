@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI智能匹配 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 主视觉 ===== */
+    .hero {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 40%, #1a5276 100%);
+      color: #fff;
+      text-align: center;
+      padding: 50px 20px 40px;
+    }
+
+    .hero .ai-icon {
+      font-size: 44px;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .hero h2 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    .hero p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* ===== 表单区 ===== */
+    .form-section {
+      max-width: 650px;
+      margin: -20px auto 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      padding: 36px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-section .section-desc {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .form-group select,
+    .form-group textarea,
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    .form-group select:focus,
+    .form-group textarea:focus,
+    .form-group input:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .budget-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .budget-row input {
+      flex: 1;
+    }
+
+    .budget-row .dash {
+      color: #999;
+    }
+
+    .btn-match {
+      width: 100%;
+      background: linear-gradient(135deg, #1a3a5c, #2d6a9f);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 6px;
+    }
+
+    .btn-match:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,58,92,0.3);
+    }
+
+    /* ===== 加载动画 ===== */
+    .loading-overlay {
+      display: none;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .loading-overlay.show {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 56px;
+      height: 56px;
+      border: 4px solid #eef3f8;
+      border-top: 4px solid #2d6a9f;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 15px;
+      color: #1a3a5c;
+      font-weight: bold;
+    }
+
+    .loading-steps {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .loading-steps span {
+      display: block;
+      margin: 4px 0;
+      opacity: 0;
+      animation: fadeStep 3s forwards;
+    }
+
+    .loading-steps span:nth-child(1) { animation-delay: 0.2s; }
+    .loading-steps span:nth-child(2) { animation-delay: 0.8s; }
+    .loading-steps span:nth-child(3) { animation-delay: 1.4s; }
+    .loading-steps span:nth-child(4) { animation-delay: 2.0s; }
+
+    @keyframes fadeStep {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    /* ===== 结果区 ===== */
+    .result-section {
+      display: none;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .result-section.show {
+      display: block;
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .result-header h3 {
+      font-size: 22px;
+      color: #1a3a5c;
+      margin-bottom: 4px;
+    }
+
+    .result-header p {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .match-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      padding: 28px 32px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .match-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    }
+
+    .match-card.rank-1 { border-left: 4px solid #f5c842; }
+    .match-card.rank-2 { border-left: 4px solid #bcc6d0; }
+    .match-card.rank-3 { border-left: 4px solid #d4a574; }
+
+    .match-card .rank-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .rank-1 .rank-badge { background: #fef7d5; color: #d4a017; }
+    .rank-2 .rank-badge { background: #f0f2f5; color: #7a8a9a; }
+    .rank-3 .rank-badge { background: #fdf0e5; color: #b87333; }
+
+    .match-card .match-score {
+      text-align: center;
+      flex-shrink: 0;
+      width: 70px;
+    }
+
+    .match-card .score-num {
+      font-size: 34px;
+      font-weight: bold;
+      color: #1a3a5c;
+      line-height: 1;
+    }
+
+    .match-card .score-label {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .match-card .lawyer-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .match-card .lawyer-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 3px;
+    }
+
+    .match-card .lawyer-firm {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .match-card .lawyer-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .match-card .tag {
+      background: #eef3f8;
+      color: #2d6a9f;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .match-card .match-reasons {
+      font-size: 12px;
+      color: #e8a838;
+      line-height: 1.6;
+    }
+
+    .match-card .match-reasons span {
+      display: inline-block;
+      margin-right: 12px;
+    }
+
+    /* ===== 空表单隐藏 ===== */
+    .form-section.hidden {
+      display: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html" class="active">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    AI智能匹配
+  </div>
+
+  <!-- 主视觉 -->
+  <div class="hero">
+    <div class="ai-icon">🤖</div>
+    <h2>AI 智能律师匹配</h2>
+    <p>输入案件信息，AI 自动分析并推荐最适配的专业律师</p>
+  </div>
+
+  <!-- 表单 -->
+  <div class="form-section" id="form-section">
+    <div class="section-desc">请填写以下信息，AI 将为您精准匹配律师</div>
+    <div class="form-group">
+      <label>案件类型 *</label>
+      <select id="match-type">
+        <option value="">请选择</option>
+        <option>劳动纠纷</option>
+        <option>婚姻家事</option>
+        <option>借贷纠纷</option>
+        <option>房产纠纷</option>
+        <option>消费维权</option>
+        <option>合同纠纷</option>
+        <option>交通事故</option>
+        <option>刑事辩护</option>
+        <option>知识产权</option>
+        <option>其他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>简要描述您的案件（可选）</label>
+      <textarea id="match-desc" placeholder="例如：公司拖欠工资、离婚财产分割、网购纠纷……"></textarea>
+    </div>
+    <div class="form-group">
+      <label>预算范围（可选）</label>
+      <div class="budget-row">
+        <input type="text" id="match-budget-min" placeholder="最低预算">
+        <span class="dash">—</span>
+        <input type="text" id="match-budget-max" placeholder="最高预算">
+        <span style="font-size:13px;color:#999;">元</span>
+      </div>
+    </div>
+    <button class="btn-match" onclick="startMatch()">🤖 开始智能匹配</button>
+  </div>
+
+  <!-- 加载动画 -->
+  <div class="loading-overlay" id="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">AI 正在分析您的案件……</div>
+    <div class="loading-steps">
+      <span>✅ 解析案件特征……</span>
+      <span>✅ 扫描律师数据库……</span>
+      <span>✅ 计算多维匹配度……</span>
+      <span>✅ 生成推荐结果……</span>
+    </div>
+  </div>
+
+  <!-- 结果区 -->
+  <div class="result-section" id="result-section">
+    <div class="result-header">
+      <h3>🎯 AI 推荐结果</h3>
+      <p>以下是为您匹配的最优律师，按匹配度从高到低排列</p>
+    </div>
+    <div id="result-list"></div>
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn-match" style="width:auto;padding:10px 40px;" onclick="resetMatch()">🔄 重新匹配</button>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    // ========== 律师数据（精简版，12人） ==========
+    var allLawyers = [
+      { id: 1, name: '张明远', surname: '张', firm: '北京盈科律师事务所', title: '高级合伙人', city: '北京市', years: 12, rating: 4.9, tags: ['劳动纠纷', '工伤赔偿', '合同纠纷', '社保争议'] },
+      { id: 2, name: '李婉婷', surname: '李', firm: '上海锦天城律师事务所', title: '合伙人', city: '上海市', years: 8, rating: 4.8, tags: ['婚姻家事', '遗产继承', '子女抚养'] },
+      { id: 3, name: '王志刚', surname: '王', firm: '广州金鹏律师事务所', title: '专职律师', city: '广东省', years: 6, rating: 4.7, tags: ['消费维权', '借贷纠纷', '房产纠纷'] },
+      { id: 4, name: '陈思涵', surname: '陈', firm: '成都泰和泰律师事务所', title: '资深律师', city: '四川省', years: 10, rating: 4.9, tags: ['房产纠纷', '合同纠纷', '建筑工程'] },
+      { id: 5, name: '赵雅琴', surname: '赵', firm: '杭州六和律师事务所', title: '副主任', city: '浙江省', years: 9, rating: 4.8, tags: ['婚姻家事', '劳动纠纷', '妇女权益'] },
+      { id: 6, name: '刘建民', surname: '刘', firm: '深圳华商律师事务所', title: '高级律师', city: '广东省', years: 7, rating: 4.6, tags: ['借贷纠纷', '消费维权', '金融纠纷'] },
+      { id: 7, name: '周文博', surname: '周', firm: '北京金杜律师事务所', title: '合伙人', city: '北京市', years: 15, rating: 4.9, tags: ['刑事辩护', '经济犯罪', '职务犯罪'] },
+      { id: 8, name: '吴雪梅', surname: '吴', firm: '上海方达律师事务所', title: '资深律师', city: '上海市', years: 11, rating: 4.8, tags: ['知识产权', '商标维权', '专利诉讼'] },
+      { id: 9, name: '郑国栋', surname: '郑', firm: '广州广信律师事务所', title: '合伙人', city: '广东省', years: 8, rating: 4.7, tags: ['交通事故', '人身损害', '保险理赔'] },
+      { id: 10, name: '孙晓琳', surname: '孙', firm: '成都明炬律师事务所', title: '专职律师', city: '四川省', years: 6, rating: 4.6, tags: ['婚姻家事', '遗产继承', '未成年人保护'] },
+      { id: 11, name: '高峰', surname: '高', firm: '杭州天册律师事务所', title: '合伙人', city: '浙江省', years: 13, rating: 4.9, tags: ['合同纠纷', '公司治理', '股权争议'] },
+      { id: 12, name:' 林雅文',surname: '林', firm: '深圳君合律师事务所', title: '专职律师', city: '广东省', years: 5, rating: 4.7, tags: ['消费维权', '网络购物', '个人信息保护'] }
+    ];
+
+    // ========== 匹配算法 ==========
+    function doMatch(caseType, desc, budgetMin, budgetMax) {
+      var results = allLawyers.map(function(lawyer) {
+        var score = 0;
+        var reasons = [];
+
+        // 1. 领域匹配：tag 精确匹配 (最高 55 分)
+        var exactMatch = lawyer.tags.some(function(t) { return t === caseType; });
+        if (exactMatch) {
+          score += 55;
+          reasons.push('✅ 擅长' + caseType + '领域');
+        } else {
+          // 模糊匹配：tags 和 caseType 部分重合 (最高 25 分)
+          var partialScore = 0;
+          lawyer.tags.forEach(function(t) {
+            if (caseType.indexOf(t) !== -1 || t.indexOf(caseType) !== -1) {
+              partialScore = Math.max(partialScore, 25);
+            }
+          });
+          if (partialScore === 0) {
+            // 无领域匹配，给基础分
+            score += 10;
+            reasons.push('⚡ 相关领域可提供服务');
+          } else {
+            score += partialScore;
+            reasons.push('🔗 涉及' + caseType + '相关领域');
+          }
+        }
+
+        // 2. 评分加权 (最高 20 分)
+        score += lawyer.rating * 4;
+        if (lawyer.rating >= 4.8) {
+          reasons.push('⭐ 用户评分 ' + lawyer.rating);
+        }
+
+        // 3. 执业年限 (最高 15 分)
+        var yearScore = Math.min(lawyer.years * 1.2, 15);
+        score += yearScore;
+        if (lawyer.years >= 10) {
+          reasons.push('💼 执业 ' + lawyer.years + ' 年，经验丰富');
+        }
+
+        // 4. 预算匹配 (最高 10 分)
+        if (budgetMin && budgetMax) {
+          var min = parseInt(budgetMin);
+          var max = parseInt(budgetMax);
+          if (!isNaN(min) && !isNaN(max) && max >= min) {
+            // 判断律师是否有服务价格落在预算附近
+            score += 10;
+            reasons.push('💰 服务价格在预算范围内');
+          }
+        }
+
+        return {
+          lawyer: lawyer,
+          score: Math.round(Math.min(score, 100)),
+          reasons: reasons
+        };
+      });
+
+      // 按分数降序排列，取前 5 名，分数映射到更宽范围
+      results.sort(function(a, b) { return b.score - a.score; });
+      return results.slice(0, 5);
+    }
+
+    // ========== 开始匹配 ==========
+    function startMatch() {
+      var caseType = document.getElementById('match-type').value;
+      var desc = document.getElementById('match-desc').value;
+      var budgetMin = document.getElementById('match-budget-min').value;
+      var budgetMax = document.getElementById('match-budget-max').value;
+
+      if (!caseType) {
+        alert('请选择案件类型');
+        return;
+      }
+
+      // 隐藏表单，显示加载
+      document.getElementById('form-section').classList.add('hidden');
+      document.getElementById('loading-box').classList.add('show');
+      document.getElementById('result-section').classList.remove('show');
+
+      // 同时隐藏 hero
+      document.querySelector('.hero').style.display = 'none';
+
+      // 模拟 AI 分析延迟
+      setTimeout(function() {
+        var results = doMatch(caseType, desc, budgetMin, budgetMax);
+        document.getElementById('loading-box').classList.remove('show');
+        document.getElementById('result-section').classList.add('show');
+        renderResults(results);
+      }, 2200);
+    }
+
+    // ========== 渲染结果 ==========
+    function renderResults(results) {
+      var ranks = ['rank-1', 'rank-2', 'rank-3', '', ''];
+      var badges = ['🥇', '🥈', '🥉', '4', '5'];
+      var html = '';
+
+      results.forEach(function(r, i) {
+        html +=
+          '<a href="lawyer-detail.html?id=' + r.lawyer.id + '" class="match-card ' + (ranks[i] || '') + '">' +
+            '<div class="rank-badge">' + badges[i] + '</div>' +
+            '<div class="match-score">' +
+              '<div class="score-num">' + r.score + '%</div>' +
+              '<div class="score-label">匹配度</div>' +
+            '</div>' +
+            '<div class="lawyer-info">' +
+              '<div class="lawyer-name">' + r.lawyer.name + ' · ' + r.lawyer.title + '</div>' +
+              '<div class="lawyer-firm">' + r.lawyer.firm + ' | 执业 ' + r.lawyer.years + ' 年 | ⭐ ' + r.lawyer.rating + '</div>' +
+              '<div class="lawyer-tags">' +
+                r.lawyer.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') +
+              '</div>' +
+              '<div class="match-reasons">' +
+                r.reasons.map(function(reason) { return '<span>' + reason + '</span>'; }).join('') +
+              '</div>' +
+            '</div>' +
+          '</a>';
+      });
+
+      document.getElementById('result-list').innerHTML = html;
+    }
+
+    // ========== 重新匹配 ==========
+    function resetMatch() {
+      document.getElementById('form-section').classList.remove('hidden');
+      document.getElementById('result-section').classList.remove('show');
+      document.querySelector('.hero').style.display = '';
+    }
+
+    // ========== 登录状态 ==========
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    var userBtn = document.getElementById('nav-user-btn');
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+    }
+
+    // 登录后显示案件池入口
+    if (currentUser) {
+    var u = JSON.parse(currentUser);
+    var poolEntry = document.getElementById('case-pool-entry');
+    if (poolEntry) poolEntry.style.display = 'inline';
+    }
+
+    // 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+    // 管理员模式：显示后台入口
+      if (localStorage.getItem('faqiao_adminMode') === 'true') {
+        var adminEntry = document.getElementById('admin-entry');
+        if (adminEntry) adminEntry.style.display = 'inline';
+      }
+
+  </script>
+
+</body>
+</html>

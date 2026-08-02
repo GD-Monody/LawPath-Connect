@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>律师认证 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 主体 ===== */
+    .main-content {
+      max-width: 700px;
+      margin: 30px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* ===== 步骤条 ===== */
+    .steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #bbb;
+    }
+
+    .step .dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .step.active .dot {
+      border-color: #2d6a9f;
+      background: #2d6a9f;
+      color: #fff;
+    }
+
+    .step.done .dot {
+      border-color: #67c23a;
+      background: #67c23a;
+      color: #fff;
+    }
+
+    .step.done .dot::after {
+      content: '✓';
+    }
+
+    .step.active {
+      color: #1a3a5c;
+      font-weight: bold;
+    }
+
+    .step.done {
+      color: #67c23a;
+    }
+
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: #ddd;
+      margin: 0 12px;
+    }
+
+    .step-line.done {
+      background: #67c23a;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      padding: 32px 36px;
+      margin-bottom: 20px;
+    }
+
+    .card .card-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 20px;
+    }
+
+    /* ===== 表单 ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    /* 上传模拟区 */
+    .upload-box {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .upload-box:hover {
+      border-color: #2d6a9f;
+    }
+
+    .upload-box .icon {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+
+    .upload-box .text {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .upload-box .file-name {
+      font-size: 12px;
+      color: #67c23a;
+      margin-top: 4px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: #2d6a9f;
+    }
+
+    /* ===== 状态展示 ===== */
+    .status-card {
+      text-align: center;
+    }
+
+    .status-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+
+    .status-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .status-desc {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.8;
+    }
+
+    .status-pending-icon { color: #e8a838; }
+    .status-done-icon { color: #67c23a; }
+    .status-reject-icon { color: #f56c6c; }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .info-table td {
+      padding: 8px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .info-table td:first-child {
+      color: #999;
+      width: 100px;
+    }
+
+    /* ===== 后台模拟按钮 ===== */
+    .admin-panel {
+      background: #fef5e7;
+      border: 1px solid #f5dab1;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 24px;
+    }
+
+    .admin-panel .title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #e8a838;
+      margin-bottom: 10px;
+    }
+
+    .admin-panel button {
+      background: #e8a838;
+      color: #fff;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    .admin-panel button.reject {
+      background: #f56c6c;
+    }
+
+    .admin-panel button.reset {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+    }
+
+    /* ===== 登录提示 ===== */
+    .login-tip {
+      text-align: center;
+      padding: 80px 20px;
+      color: #999;
+      font-size: 15px;
+    }
+
+    .login-tip a {
+      color: #1a3a5c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    <a href="profile.html">个人主页</a>
+    <span>›</span>
+    律师认证
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-content" id="main-content"></div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    var currentUserStr = localStorage.getItem('faqiao_currentUser');
+    var currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+    var userBtn = document.getElementById('nav-user-btn');
+    var container = document.getElementById('main-content');
+
+    // ========== 导航栏 ==========
+    if (currentUser) {
+      userBtn.textContent = '👤 ' + currentUser.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.href = 'index.html';
+      };
+
+      // 案件池入口
+      var poolEntry = document.getElementById('case-pool-entry');
+      if (poolEntry) poolEntry.style.display = 'inline';
+
+      // 个人主页入口
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+    // 管理员入口
+    if (localStorage.getItem('faqiao_adminMode') === 'true') {
+      var adminEntry = document.getElementById('admin-entry');
+      if (adminEntry) adminEntry.style.display = 'inline';
+    }
+
+    // ========== 认证状态管理 ==========
+    var CERT_KEY = 'faqiao_cert_' + (currentUser ? currentUser.phone : '');
+    var certData = null;
+    var certStr = localStorage.getItem(CERT_KEY);
+    if (certStr) certData = JSON.parse(certStr);
+
+    // 状态：none(未提交) / pending(审核中) / done(已通过) / reject(已驳回)
+
+    // ========== 渲染 ==========
+    if (!currentUser) {
+      container.innerHTML = '<div class="login-tip">🔒 请先 <a href="login.html">登录</a> 后查看认证页面</div>';
+    } else if (currentUser.role !== 'lawyer') {
+      container.innerHTML =
+        '<div class="login-tip">⚠️ 律师认证仅对执业律师开放<br><small style="color:#ccc;">请使用律师身份注册登录</small></div>';
+    } else if (!certData || certData.status === 'none') {
+      renderForm();
+    } else if (certData.status === 'pending') {
+      renderStatus('pending');
+    } else if (certData.status === 'done') {
+      renderStatus('done');
+    } else if (certData.status === 'reject') {
+      renderStatus('reject');
+    }
+
+    // ========== 表单视图 ==========
+    function renderForm() {
+      var html = '';
+
+      // 步骤条
+      html +=
+        '<div class="steps">' +
+          '<div class="step active"><div class="dot">1</div>填写资料</div>' +
+          '<div class="step-line"></div>' +
+          '<div class="step"><div class="dot">2</div>提交审核</div>' +
+          '<div class="step-line"></div>' +
+          '<div class="step"><div class="dot">3</div>审核通过</div>' +
+        '</div>';
+
+      // 表单
+      html +=
+        '<div class="card">' +
+          '<div class="card-title">📋 律师执业认证</div>' +
+          '<div class="form-row">' +
+            '<div class="form-group"><label>真实姓名 *</label><input type="text" id="cert-name" placeholder="请输入您的真实姓名"></div>' +
+            '<div class="form-group"><label>身份证号 *</label><input type="text" id="cert-idcard" placeholder="请输入身份证号"></div>' +
+          '</div>' +
+          '<div class="form-group"><label>执业证号 *</label><input type="text" id="cert-license" placeholder="请输入律师执业证号"></div>' +
+          '<div class="form-group"><label>所属律所 *</label><input type="text" id="cert-firm" placeholder="请输入您所在的律师事务所全称"></div>' +
+          '<div class="form-row">' +
+            '<div class="form-group"><label>执业年限 *</label><input type="text" id="cert-years" placeholder="如：12"></div>' +
+            '<div class="form-group"><label>擅长领域 *</label><input type="text" id="cert-tags" placeholder="如：劳动纠纷,合同纠纷"></div>' +
+          '</div>' +
+          '<div class="form-group"><label>个人简介</label><textarea id="cert-intro" placeholder="介绍您的专业背景和执业经验……"></textarea></div>' +
+
+          // 上传区
+          '<div class="form-group">' +
+            '<label>执业证书（拍照上传）*</label>' +
+            '<div class="upload-box" onclick="simulateUpload(\'license\')">' +
+              '<div class="icon">📷</div>' +
+              '<div class="text">点击此处模拟上传执业证书</div>' +
+              '<div class="file-name" id="file-license" style="display:none;">✅ 执业证书.jpg 已上传</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label>律所资质证明（可选）</label>' +
+            '<div class="upload-box" onclick="simulateUpload(\'firm\')">' +
+              '<div class="icon">📄</div>' +
+              '<div class="text">点击此处模拟上传律所资质</div>' +
+              '<div class="file-name" id="file-firm" style="display:none;">✅ 律所资质.pdf 已上传</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<button class="btn-submit" onclick="submitCert()">📤 提交审核</button>' +
+        '</div>';
+
+      container.innerHTML = html;
+    }
+
+    // ========== 模拟上传 ==========
+    function simulateUpload(type) {
+      var el = document.getElementById('file-' + type);
+      el.style.display = 'block';
+      alert('文件已选择（演示模式）');
+    }
+
+    // ========== 提交认证 ==========
+    function submitCert() {
+      var name = document.getElementById('cert-name').value;
+      var idcard = document.getElementById('cert-idcard').value;
+      var license = document.getElementById('cert-license').value;
+      var firm = document.getElementById('cert-firm').value;
+      var years = document.getElementById('cert-years').value;
+      var tags = document.getElementById('cert-tags').value;
+      var intro = document.getElementById('cert-intro').value;
+
+      if (!name || !idcard || !license || !firm || !years || !tags) {
+        alert('请填写所有必填项');
+        return;
+      }
+
+      var data = {
+        name: name,
+        idcard: idcard,
+        license: license,
+        firm: firm,
+        years: parseInt(years),
+        tags: tags,
+        intro: intro || '暂无简介',
+        status: 'pending',
+        submittedAt: new Date().toLocaleString()
+      };
+
+      localStorage.setItem(CERT_KEY, JSON.stringify(data));
+      alert('认证申请已提交！请等待管理员审核。');
+      location.reload();
+    }
+
+    // ========== 状态视图 ==========
+    function renderStatus(status) {
+      var html = '';
+      var step1Done = true;
+      var step2Active = (status === 'pending');
+      var step2Done = (status === 'done' || status === 'reject');
+      var step3Active = (status === 'done');
+      var step3Done = (status === 'done');
+      var step3Reject = (status === 'reject');
+
+      // 步骤条
+      html +=
+        '<div class="steps">' +
+          '<div class="step done"><div class="dot">1</div>填写资料</div>' +
+          '<div class="step-line done"></div>' +
+          '<div class="step' + (step2Active ? ' active' : '') + (step2Done ? ' done' : '') + '"><div class="dot">' + (step2Done ? '' : '2') + '</div>提交审核</div>' +
+          '<div class="step-line' + (step2Done ? ' done' : '') + '"></div>' +
+          '<div class="step' + (step3Active ? ' active' : '') + (step3Done ? ' done' : '') + '"><div class="dot">' + (step3Done ? '' : '3') + '</div>审核通过</div>' +
+        '</div>';
+
+      // 状态卡片
+      if (status === 'pending') {
+        html +=
+          '<div class="card status-card">' +
+            '<div class="status-icon status-pending-icon">⏳</div>' +
+            '<div class="status-title">审核中</div>' +
+            '<div class="status-desc">' +
+              '您的认证申请已于 <strong>' + certData.submittedAt + '</strong> 提交<br>' +
+              '管理员将在 1-3 个工作日内完成审核，请耐心等待。<br>' +
+              '审核通过后您将获得平台认证律师身份标识。' +
+            '</div>' +
+            renderInfoTable() +
+          '</div>';
+      } else if (status === 'done') {
+        html +=
+          '<div class="card status-card">' +
+            '<div class="status-icon status-done-icon">✅</div>' +
+            '<div class="status-title">认证已通过</div>' +
+            '<div class="status-desc">' +
+              '恭喜！您已成为律途平台认证律师。<br>' +
+              '您的律师主页已公开对外展示，案件池已开启主动拓案权限。<br>' +
+              '请前往 <a href="profile.html">个人主页</a> 完善您的服务信息。' +
+            '</div>' +
+            renderInfoTable() +
+          '</div>';
+      } else if (status === 'reject') {
+        html +=
+          '<div class="card status-card">' +
+            '<div class="status-icon status-reject-icon">❌</div>' +
+            '<div class="status-title">审核未通过</div>' +
+            '<div class="status-desc">' +
+              '您的认证申请未通过审核。<br>' +
+              '可能原因：执业证信息有误、上传的证书不清晰、信息与实际情况不符。<br>' +
+              '请核对信息后重新提交。' +
+            '</div>' +
+            renderInfoTable() +
+            '<button class="btn-submit" style="margin-top:16px;" onclick="resubmit()">🔄 重新提交认证</button>' +
+          '</div>';
+      }
+
+      // 后台模拟面板
+      html +=
+        '<div class="admin-panel">' +
+          '<div class="title">🔧 演示用：模拟管理员操作</div>';
+      if (status === 'pending') {
+        html +=
+          '<button onclick="adminAction(\'done\')">✅ 通过审核</button>' +
+          '<button class="reject" onclick="adminAction(\'reject\')">❌ 驳回申请</button>';
+      }
+      html +=
+          '<button class="reset" onclick="adminAction(\'reset\')">🔄 重置认证状态</button>' +
+        '</div>';
+
+      container.innerHTML = html;
+    }
+
+    // ========== 信息表 ==========
+    function renderInfoTable() {
+      return '' +
+        '<table class="info-table">' +
+          '<tr><td>姓名</td><td>' + certData.name + '</td></tr>' +
+          '<tr><td>执业证号</td><td>' + certData.license + '</td></tr>' +
+          '<tr><td>所属律所</td><td>' + certData.firm + '</td></tr>' +
+          '<tr><td>执业年限</td><td>' + certData.years + ' 年</td></tr>' +
+          '<tr><td>擅长领域</td><td>' + certData.tags + '</td></tr>' +
+          '<tr><td>提交时间</td><td>' + certData.submittedAt + '</td></tr>' +
+        '</table>';
+    }
+
+    // ========== 管理操作 ==========
+    function adminAction(action) {
+      if (action === 'done') {
+        if (action === 'done') {
+  certData.status = 'done';
+  certData.reviewedAt = new Date().toLocaleString();
+
+  // 同步写入律师列表
+  var customLawyersStr = localStorage.getItem('faqiao_custom_lawyers');
+  var customLawyers = customLawyersStr ? JSON.parse(customLawyersStr) : [];
+  // 去重：如果已存在则更新
+  var existingIndex = -1;
+  for (var i = 0; i < customLawyers.length; i++) {
+    if (customLawyers[i].phone === currentUser.phone) {
+      existingIndex = i;
+      break;
+    }
+  }
+      var lawyerEntry = {
+        id: existingIndex >= 0 ? customLawyers[existingIndex].id : (9000 + customLawyers.length + 1),
+        phone: currentUser.phone,
+        name: certData.name,
+        surname: certData.name.charAt(0),
+        firm: certData.firm,
+        title: '认证律师',
+        city: '待完善',
+        years: certData.years,
+        rating: 5.0,
+        tags: certData.tags.split(','),
+        desc: certData.intro,
+        intro: certData.intro,
+        cases: 0,
+        winRate: '暂无',
+        cert: certData.license,
+        honors: [],
+        services: [
+          { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥200/次' },
+          { type: '诉讼文书代写', desc: '起诉状、答辩状等', period: '3-5个工作日', price: '¥800起' }
+        ],
+        reviews: []
+      };
+      if (existingIndex >= 0) {
+        customLawyers[existingIndex] = lawyerEntry;
+      } else {
+        customLawyers.push(lawyerEntry);
+      }
+      localStorage.setItem('faqiao_custom_lawyers', JSON.stringify(customLawyers));
+    }
+      } else if (action === 'reject') {
+        certData.status = 'reject';
+        certData.reviewedAt = new Date().toLocaleString();
+      } else if (action === 'reset') {
+        localStorage.removeItem(CERT_KEY);
+        location.reload();
+        return;
+      }
+      localStorage.setItem(CERT_KEY, JSON.stringify(certData));
+      location.reload();
+    }
+
+    function resubmit() {
+      localStorage.removeItem(CERT_KEY);
+      location.reload();
+    }
+  </script>
+
+</body>
+</html>

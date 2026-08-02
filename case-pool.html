@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>案件池 - 律途</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 面包屑 ===== */
+    .breadcrumb {
+      background: #fff;
+      padding: 16px 60px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .breadcrumb a {
+      color: #2d6a9f;
+      text-decoration: none;
+    }
+
+    .breadcrumb span {
+      margin: 0 8px;
+    }
+
+    /* ===== 页面标题 ===== */
+    .page-header {
+      background: #fff;
+      padding: 24px 60px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .page-header h2 {
+      font-size: 22px;
+      color: #1a3a5c;
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* ===== 筛选栏 ===== */
+    .filter-bar {
+      background: #fff;
+      padding: 16px 60px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .filter-bar select {
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .filter-bar select:focus {
+      border-color: #1a3a5c;
+      outline: none;
+    }
+
+    .filter-bar .btn-reset {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* ===== 案件列表 ===== */
+    .case-list {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    .case-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .case-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    }
+
+    .case-card .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .case-card .case-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 4px;
+    }
+
+    .case-card .case-meta {
+      font-size: 12px;
+      color: #bbb;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .case-card .case-tags {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .case-card .tag-type {
+      background: #eef3f8;
+      color: #2d6a9f;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .case-card .tag-privacy {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .tag-public {
+      background: #edf7ee;
+      color: #67c23a;
+    }
+
+    .tag-lawyer-only {
+      background: #fef5e7;
+      color: #e8a838;
+    }
+
+    .case-card .case-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp: 2;
+      line-clamp:2;
+      overflow: hidden;
+    }
+
+    .case-card .case-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #f5f5f5;
+    }
+
+    .case-card .case-budget {
+      font-size: 14px;
+      font-weight: bold;
+      color: #e8a838;
+    }
+
+    .case-card .btn-contact {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .case-card .btn-contact:hover {
+      background: #2d6a9f;
+    }
+
+    .case-card .btn-contact.contacted {
+      background: #ccc;
+      cursor: default;
+    }
+
+    .case-card .btn-detail {
+      background: #fff;
+      color: #2d6a9f;
+      border: 1px solid #2d6a9f;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* ===== 展开详情 ===== */
+    .case-detail-expand {
+      background: #fafbfc;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 14px;
+      display: none;
+    }
+
+    .case-detail-expand.show {
+      display: block;
+    }
+
+    .case-detail-expand .detail-row {
+      margin-bottom: 12px;
+    }
+
+    .case-detail-expand .detail-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 3px;
+    }
+
+    .case-detail-expand .detail-value {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #bbb;
+      font-size: 15px;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" class="active">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb">
+    <a href="index.html">首页</a>
+    <span>›</span>
+    案件池
+  </div>
+
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <h2>📋 案件池</h2>
+    <p>浏览公开案件，主动对接有需求的用户，拓展案源</p>
+  </div>
+
+  <!-- 筛选栏 -->
+  <div class="filter-bar">
+    <select id="filter-type" onchange="filterCases()">
+      <option value="">全部类型</option>
+      <option>劳动纠纷</option>
+      <option>婚姻家事</option>
+      <option>借贷纠纷</option>
+      <option>房产纠纷</option>
+      <option>消费维权</option>
+      <option>合同纠纷</option>
+      <option>交通事故</option>
+      <option>刑事辩护</option>
+      <option>知识产权</option>
+      <option>其他</option>
+    </select>
+<select id="filter-area" onchange="filterLawyers()">
+  <option value="">全部地区</option>
+  <optgroup label="华北地区">
+    <option>北京市</option>
+    <option>天津市</option>
+    <option>河北省</option>
+    <option>山西省</option>
+    <option>内蒙古自治区</option>
+  </optgroup>
+  <optgroup label="东北地区">
+    <option>辽宁省</option>
+    <option>吉林省</option>
+    <option>黑龙江省</option>
+  </optgroup>
+  <optgroup label="华东地区">
+    <option>上海市</option>
+    <option>江苏省</option>
+    <option>浙江省</option>
+    <option>安徽省</option>
+    <option>福建省</option>
+    <option>江西省</option>
+    <option>山东省</option>
+  </optgroup>
+  <optgroup label="华中地区">
+    <option>河南省</option>
+    <option>湖北省</option>
+    <option>湖南省</option>
+  </optgroup>
+  <optgroup label="华南地区">
+    <option>广东省</option>
+    <option>广西壮族自治区</option>
+    <option>海南省</option>
+  </optgroup>
+  <optgroup label="西南地区">
+    <option>重庆市</option>
+    <option>四川省</option>
+    <option>贵州省</option>
+    <option>云南省</option>
+    <option>西藏自治区</option>
+  </optgroup>
+  <optgroup label="西北地区">
+    <option>陕西省</option>
+    <option>甘肃省</option>
+    <option>青海省</option>
+    <option>宁夏回族自治区</option>
+    <option>新疆维吾尔自治区</option>
+  </optgroup>
+  <optgroup label="其他">
+    <option>其他</option>
+  </optgroup>
+</select>
+    <button class="btn-reset" onclick="resetFilter()">重置筛选</button>
+  </div>
+
+  <!-- 案件列表 -->
+  <div style="max-width:1100px;margin:0 auto 16px;padding:0 20px;font-size:13px;color:#999;" id="role-hint"></div>
+  <div class="case-list" id="case-list"></div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+    // 全局角色判断
+    function checkIsLawyer() {
+      var cu = localStorage.getItem('faqiao_currentUser');
+      return cu ? JSON.parse(cu).role === 'lawyer' : false;
+    }
+
+    // ========== 读取案件 ==========
+    function getCases() {
+      var casesStr = localStorage.getItem('faqiao_cases');
+      return casesStr ? JSON.parse(casesStr) : [];
+    }
+
+    // ========== 已联系记录 ==========
+    function getContacted() {
+      var cStr = localStorage.getItem('faqiao_contacted');
+      return cStr ? JSON.parse(cStr) : [];
+    }
+
+    function markContacted(caseId) {
+      var contacted = getContacted();
+      if (contacted.indexOf(caseId) === -1) {
+        contacted.push(caseId);
+        localStorage.setItem('faqiao_contacted', JSON.stringify(contacted));
+      }
+    }
+
+    // ========== 渲染 ==========
+    function renderCases(cases) {
+      var listEl = document.getElementById('case-list');
+      var contacted = getContacted();
+
+      if (cases.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">📭 暂无符合条件的案件<br><small style="color:#ccc;">尝试调整筛选条件，或等待用户发布新案件</small></div>';
+        return;
+      }
+
+      var html = '';
+      cases.forEach(function(c) {
+        var isContacted = contacted.indexOf(c.id) !== -1;
+        var privacyTag = '';
+        if (c.privacy === 'public') {
+          privacyTag = '<span class="tag-privacy tag-public">🌐 公开</span>';
+        } else if (c.privacy === 'lawyer-only') {
+          privacyTag = '<span class="tag-privacy tag-lawyer-only">⚖️ 仅律师可见</span>';
+        }
+
+        html +=
+          '<div class="case-card">' +
+            '<div class="case-header">' +
+              '<div>' +
+                '<div class="case-title">' + c.title + '</div>' +
+                '<div class="case-meta">' +
+                  '<span>👤 ' + (c.publisher || '匿名用户') + '</span>' +
+                  '<span>📍 ' + (c.area || '未知') + '</span>' +
+                  '<span>🕒 ' + (c.time || '近期') + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="case-tags">' +
+                '<span class="tag-type">' + c.type + '</span>' +
+                privacyTag +
+              '</div>' +
+            '</div>' +
+            '<div class="case-desc">' + (c.desc || '暂无详细描述') + '</div>' +
+            '<div class="case-footer">' +
+              '<div class="case-budget">💰 预算：' + (c.budgetMin || '未设定') + ' — ' + (c.budgetMax || '未设定') + ' 元</div>' +
+              '<div>' +
+                '<button class="btn-detail" onclick="toggleDetail(' + c.id + ')">查看详情</button>' +
+                '<button class="btn-contact' + (isContacted ? ' contacted' : '') + '" onclick="contactUser(' + c.id + ', this)"' + (isContacted ? ' disabled' : '') + '>' + (isContacted ? '已联系' : '联系用户') + '</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="case-detail-expand" id="detail-' + c.id + '">' +
+              '<div class="detail-row"><div class="detail-label">案件类型</div><div class="detail-value">' + c.type + '</div></div>' +
+              '<div class="detail-row"><div class="detail-label">所在地区</div><div class="detail-value">' + (c.area || '未填写') + '</div></div>' +
+              '<div class="detail-row"><div class="detail-label">案件描述</div><div class="detail-value">' + (c.desc || '暂无') + '</div></div>' +
+              '<div class="detail-row"><div class="detail-label">用户诉求</div><div class="detail-value">' + (c.demand || '未填写') + '</div></div>' +
+              '<div class="detail-row"><div class="detail-label">预算范围</div><div class="detail-value">' + (c.budgetMin || '未设定') + ' — ' + (c.budgetMax || '未设定') + ' 元</div></div>' +
+            '</div>' +
+          '</div>';
+      });
+      listEl.innerHTML = html;
+    }
+
+    // 角色提示
+    (function() {
+      var hint = document.getElementById('role-hint');
+      if (hint) {
+        hint.textContent = checkIsLawyer() ? '🔓 律师模式：可查看公开 + 仅律师可见的案件' : '🔒 普通模式：仅展示公开案件';
+      }
+    })();
+
+    // ========== 筛选 ==========
+    function filterCases() {
+      var typeFilter = document.getElementById('filter-type').value;
+      var areaFilter = document.getElementById('filter-area').value;
+
+      var isLawyer = checkIsLawyer();
+      var allCases = getCases();
+      var visible = allCases.filter(function(c) {
+        if (c.privacy === 'public') return true;
+        if (c.privacy === 'lawyer-only' && isLawyer) return true;
+        return false;
+      });
+
+      if (typeFilter) {
+        visible = visible.filter(function(c) { return c.type === typeFilter; });
+      }
+      if (areaFilter) {
+        visible = visible.filter(function(c) { return c.area === areaFilter; });
+      }
+
+      renderCases(visible);
+    }
+
+    function resetFilter() {
+      document.getElementById('filter-type').value = '';
+      document.getElementById('filter-area').value = '';
+      filterCases();
+    }
+
+    // ========== 展开详情 ==========
+    function toggleDetail(caseId) {
+      var el = document.getElementById('detail-' + caseId);
+      if (el.classList.contains('show')) {
+        el.classList.remove('show');
+      } else {
+        el.classList.add('show');
+      }
+    }
+
+    // ========== 联系用户 ==========
+    function contactUser(caseId, btn) {
+      if (confirm('确认联系该用户？平台将向用户推送您的律师信息和联系方式。')) {
+        markContacted(caseId);
+        btn.textContent = '已联系';
+        btn.classList.add('contacted');
+        btn.disabled = true;
+        alert('已向用户发送联系请求！用户将在案件管理中看到您的信息。');
+      }
+    }
+
+    // ========== 登录状态 ==========
+    var currentUser = localStorage.getItem('faqiao_currentUser');
+    var userBtn = document.getElementById('nav-user-btn');
+    if (currentUser) {
+      var user = JSON.parse(currentUser);
+      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+      userBtn.href = '#';
+      userBtn.onclick = function() {
+        localStorage.removeItem('faqiao_currentUser');
+        alert('已退出登录');
+        window.location.reload();
+      };
+    }
+
+    // ========== 初始化演示案件 ==========
+function initDemoCases() {
+  var version = localStorage.getItem('faqiao_cases_version');
+  if (version === 'v2') return;
+
+  var existingStr = localStorage.getItem('faqiao_cases');
+  var existing = existingStr ? JSON.parse(existingStr) : [];
+
+  // 保留用户自己发布的案件，只补充演示数据
+  var demoCases = [
+    {
+      id: -1, type: '劳动纠纷', area: '北京市', title: '公司无故辞退且拒不支付经济补偿金',
+      desc: '本人在深圳某互联网公司工作3年，2025年6月公司以"业务调整"为由单方面解除劳动合同，但未提前30天通知，也未支付任何经济补偿。入职至今公司未依法缴纳社保。',
+      demand: '要求公司支付违法解除劳动合同的赔偿金（2N），补缴入职以来的全部社保，并支付未提前通知的代通知金。',
+      budgetMin: '3000', budgetMax: '8000', privacy: 'public',
+      publisher: '匿名用户', time: '2025-07-26'
+    },
+    {
+      id: -2, type: '婚姻家事', area: '上海市', title: '离婚财产分割争议，婚后购房归属问题',
+      desc: '婚后第三年共同出资购买一套房产，首付双方各出一半，贷款由我一人偿还。现在对方要求分割房产但不承担剩余贷款，请问是否合理？',
+      demand: '明确房产分割比例，要求对方承担相应贷款责任，争取合理财产分配方案。',
+      budgetMin: '5000', budgetMax: '15000', privacy: 'lawyer-only',
+      publisher: '匿名用户', time: '2025-07-25'
+    },
+    {
+      id: -3, type: '消费维权', area: '广东省', title: '健身房预付卡退费纠纷，商家跑路',
+      desc: '在某连锁健身房办理了两年会员卡共9800元，用了不到三个月，健身房突然关门。联系负责人电话无人接听，门店已贴出转让告示。已联合20多位会员一起维权。',
+      demand: '要求全额退还剩余未消费的会费，追究商家欺诈责任，并赔偿维权期间的误工损失。',
+      budgetMin: '1000', budgetMax: '5000', privacy: 'public',
+      publisher: '消费者联盟', time: '2025-07-24'
+    },
+    {
+      id: -4, type: '借贷纠纷', area: '浙江省', title: '亲戚借款20万到期不还，有借条但对方失联',
+      desc: '三年前借给表哥20万元用于生意周转，有借条和银行转账凭证，约定一年归还。现在已经超期两年，对方电话停机、搬离原住址，完全失联。',
+      demand: '通过法律途径追回借款本金及逾期利息，申请财产保全防止对方转移资产。',
+      budgetMin: '8000', budgetMax: '20000', privacy: 'lawyer-only',
+      publisher: '匿名用户', time: '2025-07-23'
+    },
+    {
+      id: -5, type: '房产纠纷', area: '四川省', title: '开发商延期交房两年，拒绝按合同赔付违约金',
+      desc: '2023年购买某楼盘期房，合同约定2024年6月交房，至今已延期超过两年。开发商以"不可抗力"为由拒绝支付违约金，但未提供任何证明材料。同一楼盘涉及业主超过500户。',
+      demand: '要求开发商按合同约定支付延期交房违约金，并尽快完成交房手续。考虑联合其他业主集体诉讼。',
+      budgetMin: '10000', budgetMax: '30000', privacy: 'public',
+      publisher: '购房维权业主', time: '2025-07-22'
+    },
+    {
+      id: -6, type: '交通事故', area: '湖北省', title: '高速公路追尾事故，对方全责但保险赔付不足',
+      desc: '在高速公路上被后车追尾，交警判定对方全责。车辆维修费用4.2万元，但对方交强险只赔付2000元，商业险已过期。对方司机表示无力赔偿。本人有行车记录仪完整视频。',
+      demand: '要求对方赔偿全部车辆维修费用及事故处理期间的交通费、误工费。',
+      budgetMin: '3000', budgetMax: '10000', privacy: 'public',
+      publisher: '匿名用户', time: '2025-07-21'
+    },
+    {
+      id: -7, type: '知识产权', area: '江苏省', title: '原创设计被同行抄袭并在电商平台销售',
+      desc: '本人经营一家原创设计品牌，发现某同行店铺在未经授权的情况下完全抄袭了我们的爆款产品设计（已申请外观专利），并在多个电商平台低价销售，严重影响了我们的正常经营。',
+      demand: '要求侵权方立即下架抄袭产品、公开道歉，并赔偿侵权行为造成的经济损失及合理维权费用。',
+      budgetMin: '15000', budgetMax: '50000', privacy: 'lawyer-only',
+      publisher: '原创设计师', time: '2025-07-20'
+    },
+    {
+      id: -8, type: '其他', area: '山东省', title: '邻居私自搭建违章建筑，影响采光和通风',
+      desc: '隔壁邻居在未经审批的情况下，在公共区域私自搭建了一间30平米的储物间，导致我家客厅采光严重受阻、通风不畅。多次协商无果，物业和居委会协调也未能解决。',
+      demand: '要求邻居拆除违章建筑，恢复原状，并赔偿因采光受损造成的房屋贬值损失。',
+      budgetMin: '2000', budgetMax: '6000', privacy: 'private',
+      publisher: '匿名用户', time: '2025-07-19'
+    }
+  ];
+
+  // 合并：演示数据在前，用户数据在后
+  var merged = demoCases.concat(existing);
+  localStorage.setItem('faqiao_cases', JSON.stringify(merged));
+  localStorage.setItem('faqiao_cases_version', 'v2');
+}
+
+initDemoCases();
+
+    // ========== 初始渲染 ==========
+    filterCases();
+
+    // 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+    // 管理员模式：显示后台入口
+      if (localStorage.getItem('faqiao_adminMode') === 'true') {
+        var adminEntry = document.getElementById('admin-entry');
+        if (adminEntry) adminEntry.style.display = 'inline';
+      }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>律途 - 法律服务对接平台</title>
+  <style>
+    /* 全局重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      background: #1a3a5c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      height: 64px;
+    }
+
+    .navbar .logo {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .navbar .nav-links a {
+      color: #ccd9e6;
+      text-decoration: none;
+      margin-left: 32px;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    .navbar .nav-links a.active {
+      color: #e8a838;
+      font-weight: bold;
+    }
+
+    .navbar .btn-register {
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 32px;
+    }
+
+    /* ===== 主视觉区 ===== */
+    .hero {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%);
+      color: #fff;
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      opacity: 0.85;
+      margin-bottom: 32px;
+    }
+
+    .hero .btn-main {
+      display: inline-block;
+      background: #e8a838;
+      color: #1a3a5c;
+      padding: 14px 40px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+
+    .hero .btn-main:hover {
+      transform: scale(1.05);
+    }
+
+    /* ===== 数据统计区 ===== */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      padding: 50px 20px;
+      background: #fff;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 36px;
+      font-weight: bold;
+      color: #1a3a5c;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #999;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #bbb;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <div class="logo">⚖️ 律途</div>
+    <div class="nav-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="lawyer.html">找律师</a>
+      <a href="publish.html">案件发布</a>
+      <a href="case-pool.html" id="case-pool-entry" style="display:none;">案件池</a>
+      <a href="ai-match.html">AI匹配</a>
+      <a href="community.html">互助社区</a>
+      <a href="knowledge.html">普法知识</a>
+      <a href="public-welfare.html">公益咨询</a>
+      <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
+      <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+      <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </div>
+  </div>
+
+  <!-- 主视觉 -->
+  <div class="hero">
+    <h1 id="hero-title"></h1> 
+    <p>智能匹配 · 明码标价 · 双向对接 · 公益普惠</p>
+    <a href="publish.html" class="btn-main">立即发布案件 →</a>
+  </div>
+
+  <!-- 数据统计 -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-lawyers">0</div>
+      <div class="stat-label">已入驻律师</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-cases">0</div>
+      <div class="stat-label">累计服务案件</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-welfare">0</div>
+      <div class="stat-label">公益答疑次数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-satisfaction">0</div>
+      <div class="stat-label">用户满意度</div>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    © 2025 律途 - 法律服务对接平台 | 参赛作品演示
+  </div>
+
+  <script>
+  // 检查登录状态
+  var currentUser = localStorage.getItem('faqiao_currentUser');
+  // 管理员模式检测
+  if (localStorage.getItem('faqiao_adminMode') === 'true') {
+    var entry = document.getElementById('admin-entry');
+    if (entry) entry.style.display = 'inline';
+  }
+  var userBtn = document.getElementById('nav-user-btn');
+
+  if (currentUser) {
+    var user = JSON.parse(currentUser);
+    userBtn.textContent = '👤 ' + user.phone + ' | 退出';
+    userBtn.href = '#';
+    userBtn.onclick = function() {
+      localStorage.removeItem('faqiao_currentUser');
+      alert('已退出登录');
+      window.location.reload();
+    };
+  }
+
+  // 登录后显示案件池入口
+  if (currentUser) {
+    var u = JSON.parse(currentUser);
+    var poolEntry = document.getElementById('case-pool-entry');
+    if (poolEntry) poolEntry.style.display = 'inline';
+  }
+
+  // 显示个人主页入口
+    if (currentUser) {
+      var profileEntry = document.getElementById('profile-entry');
+      if (profileEntry) profileEntry.style.display = 'inline';
+    }
+
+</script>
+<script>
+  // ========== 打字机效果 ==========
+  (function() {
+    var titleEl = document.getElementById('hero-title');
+    if (!titleEl) return;
+
+    // 如果本次会话已播放过 → 直接显示最终结果
+    if (sessionStorage.getItem('hero-animation-done') === 'true') {
+      titleEl.textContent = '让每一位普通人，都能找到对的律师';
+      document.getElementById('stat-lawyers').textContent = '1,286';
+      document.getElementById('stat-cases').textContent = '5,432';
+      document.getElementById('stat-welfare').textContent = '892';
+      document.getElementById('stat-satisfaction').textContent = '94.7%';
+      return;
+    }
+
+    // 标记已播放
+    sessionStorage.setItem('hero-animation-done', 'true');
+
+    var text = '让每一位普通人，都能找到对的律师';
+    var i = 0;
+
+    function type() {
+      if (i < text.length) {
+        titleEl.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, 80);
+      } else {
+        countUp();
+      }
+    }
+    type();
+  })();
+
+  // ========== 数字滚动效果 ==========
+  function countUp() {
+    animateNumber('stat-lawyers', 0, 1286, 1200);
+    animateNumber('stat-cases', 0, 5432, 1500);
+    animateNumber('stat-welfare', 0, 892, 1000);
+    animateNumber('stat-satisfaction', 0, 94.7, 800);
+  }
+
+  function animateNumber(id, start, end, duration) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var startTime = null;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = start + (end - start) * eased;
+
+      if (end === Math.floor(end)) {
+        el.textContent = Math.floor(current).toLocaleString();
+      } else {
+        el.textContent = current.toFixed(1) + '%';
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = end === Math.floor(end) ? end.toLocaleString() : end.toFixed(1) + '%';
+      }
+    }
+    requestAnimationFrame(step);
+  }
+</script>
+
+</body>
+</html>
