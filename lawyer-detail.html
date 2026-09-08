@@ -4,14 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>律师详情 - 律途</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    /* ===== 全局 ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
       background: #f5f7fa;
@@ -19,65 +13,8 @@
     }
 
     /* ===== 导航栏 ===== */
-    .navbar {
-      background: #1a3a5c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 64px;
-    }
-
-    .navbar .logo {
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-decoration: none;
-    }
-
-    .navbar .nav-links a {
-      color: #ccd9e6;
-      text-decoration: none;
-      margin-left: 32px;
-      font-size: 14px;
-    }
-
-    .navbar .nav-links a:hover {
-      color: #fff;
-    }
-
-    .navbar .nav-links a.active {
-      color: #e8a838;
-      font-weight: bold;
-    }
-
-    .navbar .btn-register {
-      background: #e8a838;
-      color: #1a3a5c;
-      padding: 8px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      margin-left: 32px;
-    }
 
     /* ===== 面包屑导航 ===== */
-    .breadcrumb {
-      background: #fff;
-      padding: 16px 60px;
-      font-size: 13px;
-      color: #999;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .breadcrumb a {
-      color: #2d6a9f;
-      text-decoration: none;
-    }
-
-    .breadcrumb span {
-      margin: 0 8px;
-    }
 
     /* ===== 主体两栏布局 ===== */
     .main-content {
@@ -288,15 +225,6 @@
     }
 
     /* ===== 底部 ===== */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #bbb;
-      background: #fff;
-      border-top: 1px solid #eee;
-      margin-top: 20px;
-    }
 
     /* ===== 聊天浮动按钮 ===== */
     .chat-float-btn {
@@ -539,26 +467,6 @@
   </div>
 
   <script>
-  // 检查登录状态
-  var currentUser = localStorage.getItem('faqiao_currentUser');
-    // 管理员模式检测
-    if (localStorage.getItem('faqiao_adminMode') === 'true') {
-      var entry = document.getElementById('admin-entry');
-      if (entry) entry.style.display = 'inline';
-    }
-  var userBtn = document.getElementById('nav-user-btn');
-
-  if (currentUser) {
-    var user = JSON.parse(currentUser);
-    userBtn.textContent = '👤 ' + user.phone + ' | 退出';
-    userBtn.href = '#';
-    userBtn.onclick = function() {
-      localStorage.removeItem('faqiao_currentUser');
-      alert('已退出登录');
-      window.location.reload();
-    };
-  }
-
   // ========== 聊天功能 ==========
 function toggleChat() {
   var panel = document.getElementById('chat-panel');
@@ -994,21 +902,6 @@ lawyer.reviews.forEach(function(r) {
 document.getElementById('detail-reviews').innerHTML = reviewsHtml;
 document.getElementById('review-count').textContent = '(' + lawyer.reviews.length + '条)';
 
-
-// 登录后显示案件池入口
-if (currentUser) {
-  var u = JSON.parse(currentUser);
-  var poolEntry = document.getElementById('case-pool-entry');
-  if (poolEntry) poolEntry.style.display = 'inline';
-}
-
-// 显示个人主页入口
-    if (currentUser) {
-      var profileEntry = document.getElementById('profile-entry');
-      if (profileEntry) profileEntry.style.display = 'inline';
-    }
-
-
 // 下单界面
 function goOrder(serviceType, servicePrice, servicePeriod) {
   var orderData = {
@@ -1050,5 +943,6 @@ function goOrder(serviceType, servicePrice, servicePeriod) {
   </div>
 </div>
 
+  <script src="common.js"></script>
 </body>
 </html>

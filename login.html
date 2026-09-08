@@ -4,14 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登录/注册 - 律途</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    /* ===== 全局 ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
       background: #f5f7fa;
@@ -22,42 +16,6 @@
     }
 
     /* ===== 导航栏 ===== */
-    .navbar {
-      background: #1a3a5c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 64px;
-    }
-
-    .navbar .logo {
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-decoration: none;
-    }
-
-    .navbar .nav-links a {
-      color: #ccd9e6;
-      text-decoration: none;
-      margin-left: 32px;
-      font-size: 14px;
-    }
-
-    .navbar .nav-links a:hover {
-      color: #fff;
-    }
-
-    .navbar .btn-register {
-      background: #e8a838;
-      color: #1a3a5c;
-      padding: 8px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      margin-left: 32px;
-    }
 
     /* ===== 主体：居中卡片 ===== */
     .main {
@@ -231,19 +189,9 @@
     }
 
     /* 隐藏 */
-    .hidden {
-      display: none;
-    }
 
     /* ===== 底部 ===== */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #bbb;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
+    
   </style>
 </head>
 <body>
@@ -335,7 +283,6 @@
         </div>
       </div>
       <!-- 注册表单结束 -->
-
 
 <!--底部-->
 <div class="footer">
@@ -492,5 +439,6 @@ function sendCode() {
 
   </script>
 
+  <script src="common.js"></script>
 </body>
 </html>

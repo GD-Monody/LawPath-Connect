@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>后台管理 - 律途</title>
+  <link rel="stylesheet" href="common.css">
   <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
   <style>
     * {
@@ -19,42 +20,6 @@
     }
 
     /* ===== 导航栏 ===== */
-    .navbar {
-      background: #1a3a5c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 64px;
-    }
-
-    .navbar .logo {
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-decoration: none;
-    }
-
-    .navbar .nav-links a {
-      color: #ccd9e6;
-      text-decoration: none;
-      margin-left: 32px;
-      font-size: 14px;
-    }
-
-    .navbar .nav-links a:hover {
-      color: #fff;
-    }
-
-    .navbar .btn-register {
-      background: #e8a838;
-      color: #1a3a5c;
-      padding: 8px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      margin-left: 32px;
-    }
 
     /* ===== 页面标题 ===== */
     .page-header {
@@ -219,20 +184,8 @@
       color: #f56c6c;
     }
 
-    .navbar .nav-links a.admin-link {
-        color: #e8a838;
-        font-weight: bold;
-    }
-
     /* ===== 底部 ===== */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #bbb;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
+    
   </style>
 </head>
 <body>
@@ -249,7 +202,7 @@
       <a href="community.html">互助社区</a>
       <a href="knowledge.html">普法知识</a>
       <a href="public-welfare.html">公益咨询</a>
-      <a href="admin.html" class="admin-link">后台管理</a>
+      <a href="admin.html" class="admin-link active">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
     </div>
@@ -566,20 +519,6 @@
       window.addEventListener('resize', function() { chart.resize(); });
     })();
 
-    // ========== 登录状态 ==========
-    var currentUser = localStorage.getItem('faqiao_currentUser');
-    var userBtn = document.getElementById('nav-user-btn');
-    if (currentUser) {
-      var user = JSON.parse(currentUser);
-      userBtn.textContent = '👤 ' + user.phone + ' | 退出';
-      userBtn.href = '#';
-      userBtn.onclick = function() {
-        localStorage.removeItem('faqiao_currentUser');
-        alert('已退出登录');
-        window.location.reload();
-      };
-    }
-
     // 进入后台页自动开启管理员模式
 localStorage.setItem('faqiao_adminMode', 'true');
 
@@ -589,20 +528,8 @@ function exitAdminMode() {
   window.location.href = 'index.html';
 }
 
-// 登录后显示案件池入口
-if (currentUser) {
-  var u = JSON.parse(currentUser);
-  var poolEntry = document.getElementById('case-pool-entry');
-  if (poolEntry) poolEntry.style.display = 'inline';
-}
-
-// 显示个人主页入口
-if (currentUser) {
-  var profileEntry = document.getElementById('profile-entry');
-  if (profileEntry) profileEntry.style.display = 'inline';
-}
-
   </script>
 
+  <script src="common.js"></script>
 </body>
 </html>

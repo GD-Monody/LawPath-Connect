@@ -4,63 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>律途 - 法律服务对接平台</title>
+  <link rel="stylesheet" href="common.css">
   <style>
-    /* 全局重置 */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-      background: #f5f7fa;
-      color: #333;
-    }
-
-    /* ===== 导航栏 ===== */
-    .navbar {
-      background: #1a3a5c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 64px;
-    }
-
-    .navbar .logo {
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-
-    .navbar .nav-links a {
-      color: #ccd9e6;
-      text-decoration: none;
-      margin-left: 32px;
-      font-size: 14px;
-      transition: color 0.3s;
-    }
-
-    .navbar .nav-links a:hover {
-      color: #fff;
-    }
-
-    .navbar .nav-links a.active {
-      color: #e8a838;
-      font-weight: bold;
-    }
-
-    .navbar .btn-register {
-      background: #e8a838;
-      color: #1a3a5c;
-      padding: 8px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      margin-left: 32px;
-    }
-
     /* ===== 主视觉区 ===== */
     .hero {
       background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%);
@@ -122,15 +67,6 @@
       color: #999;
     }
 
-    /* ===== 底部 ===== */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #bbb;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
   </style>
 </head>
 <body>
@@ -185,41 +121,7 @@
     © 2025 律途 - 法律服务对接平台 | 参赛作品演示
   </div>
 
-  <script>
-  // 检查登录状态
-  var currentUser = localStorage.getItem('faqiao_currentUser');
-  // 管理员模式检测
-  if (localStorage.getItem('faqiao_adminMode') === 'true') {
-    var entry = document.getElementById('admin-entry');
-    if (entry) entry.style.display = 'inline';
-  }
-  var userBtn = document.getElementById('nav-user-btn');
-
-  if (currentUser) {
-    var user = JSON.parse(currentUser);
-    userBtn.textContent = '👤 ' + user.phone + ' | 退出';
-    userBtn.href = '#';
-    userBtn.onclick = function() {
-      localStorage.removeItem('faqiao_currentUser');
-      alert('已退出登录');
-      window.location.reload();
-    };
-  }
-
-  // 登录后显示案件池入口
-  if (currentUser) {
-    var u = JSON.parse(currentUser);
-    var poolEntry = document.getElementById('case-pool-entry');
-    if (poolEntry) poolEntry.style.display = 'inline';
-  }
-
-  // 显示个人主页入口
-    if (currentUser) {
-      var profileEntry = document.getElementById('profile-entry');
-      if (profileEntry) profileEntry.style.display = 'inline';
-    }
-
-</script>
+  <script src="common.js"></script>
 <script>
   // ========== 打字机效果 ==========
   (function() {

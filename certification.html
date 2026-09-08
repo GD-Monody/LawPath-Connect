@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>律师认证 - 律途</title>
+  <link rel="stylesheet" href="common.css">
   <style>
     * {
       margin: 0;
@@ -18,65 +19,8 @@
     }
 
     /* ===== 导航栏 ===== */
-    .navbar {
-      background: #1a3a5c;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 60px;
-      height: 64px;
-    }
-
-    .navbar .logo {
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-decoration: none;
-    }
-
-    .navbar .nav-links a {
-      color: #ccd9e6;
-      text-decoration: none;
-      margin-left: 32px;
-      font-size: 14px;
-    }
-
-    .navbar .nav-links a:hover {
-      color: #fff;
-    }
-
-    .navbar .nav-links a.active {
-      color: #e8a838;
-      font-weight: bold;
-    }
-
-    .navbar .btn-register {
-      background: #e8a838;
-      color: #1a3a5c;
-      padding: 8px 20px;
-      border-radius: 4px;
-      font-weight: bold;
-      margin-left: 32px;
-    }
 
     /* ===== 面包屑 ===== */
-    .breadcrumb {
-      background: #fff;
-      padding: 16px 60px;
-      font-size: 13px;
-      color: #999;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .breadcrumb a {
-      color: #2d6a9f;
-      text-decoration: none;
-    }
-
-    .breadcrumb span {
-      margin: 0 8px;
-    }
 
     /* ===== 主体 ===== */
     .main-content {
@@ -351,19 +295,8 @@
       text-decoration: none;
     }
 
-    .hidden {
-      display: none;
-    }
-
     /* ===== 底部 ===== */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #bbb;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
+    
   </style>
 </head>
 <body>
@@ -406,33 +339,7 @@
   <script>
     var currentUserStr = localStorage.getItem('faqiao_currentUser');
     var currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
-    var userBtn = document.getElementById('nav-user-btn');
     var container = document.getElementById('main-content');
-
-    // ========== 导航栏 ==========
-    if (currentUser) {
-      userBtn.textContent = '👤 ' + currentUser.phone + ' | 退出';
-      userBtn.href = '#';
-      userBtn.onclick = function() {
-        localStorage.removeItem('faqiao_currentUser');
-        alert('已退出登录');
-        window.location.href = 'index.html';
-      };
-
-      // 案件池入口
-      var poolEntry = document.getElementById('case-pool-entry');
-      if (poolEntry) poolEntry.style.display = 'inline';
-
-      // 个人主页入口
-      var profileEntry = document.getElementById('profile-entry');
-      if (profileEntry) profileEntry.style.display = 'inline';
-    }
-
-    // 管理员入口
-    if (localStorage.getItem('faqiao_adminMode') === 'true') {
-      var adminEntry = document.getElementById('admin-entry');
-      if (adminEntry) adminEntry.style.display = 'inline';
-    }
 
     // ========== 认证状态管理 ==========
     var CERT_KEY = 'faqiao_cert_' + (currentUser ? currentUser.phone : '');
@@ -643,51 +550,49 @@
     // ========== 管理操作 ==========
     function adminAction(action) {
       if (action === 'done') {
-        if (action === 'done') {
-  certData.status = 'done';
-  certData.reviewedAt = new Date().toLocaleString();
+        certData.status = 'done';
+        certData.reviewedAt = new Date().toLocaleString();
 
-  // 同步写入律师列表
-  var customLawyersStr = localStorage.getItem('faqiao_custom_lawyers');
-  var customLawyers = customLawyersStr ? JSON.parse(customLawyersStr) : [];
-  // 去重：如果已存在则更新
-  var existingIndex = -1;
-  for (var i = 0; i < customLawyers.length; i++) {
-    if (customLawyers[i].phone === currentUser.phone) {
-      existingIndex = i;
-      break;
-    }
-  }
-      var lawyerEntry = {
-        id: existingIndex >= 0 ? customLawyers[existingIndex].id : (9000 + customLawyers.length + 1),
-        phone: currentUser.phone,
-        name: certData.name,
-        surname: certData.name.charAt(0),
-        firm: certData.firm,
-        title: '认证律师',
-        city: '待完善',
-        years: certData.years,
-        rating: 5.0,
-        tags: certData.tags.split(','),
-        desc: certData.intro,
-        intro: certData.intro,
-        cases: 0,
-        winRate: '暂无',
-        cert: certData.license,
-        honors: [],
-        services: [
-          { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥200/次' },
-          { type: '诉讼文书代写', desc: '起诉状、答辩状等', period: '3-5个工作日', price: '¥800起' }
-        ],
-        reviews: []
-      };
-      if (existingIndex >= 0) {
-        customLawyers[existingIndex] = lawyerEntry;
-      } else {
-        customLawyers.push(lawyerEntry);
-      }
-      localStorage.setItem('faqiao_custom_lawyers', JSON.stringify(customLawyers));
-    }
+        // 同步写入律师列表
+        var customLawyersStr = localStorage.getItem('faqiao_custom_lawyers');
+        var customLawyers = customLawyersStr ? JSON.parse(customLawyersStr) : [];
+        // 去重：如果已存在则更新
+        var existingIndex = -1;
+        for (var i = 0; i < customLawyers.length; i++) {
+          if (customLawyers[i].phone === currentUser.phone) {
+            existingIndex = i;
+            break;
+          }
+        }
+        var lawyerEntry = {
+          id: existingIndex >= 0 ? customLawyers[existingIndex].id : (9000 + customLawyers.length + 1),
+          phone: currentUser.phone,
+          name: certData.name,
+          surname: certData.name.charAt(0),
+          firm: certData.firm,
+          title: '认证律师',
+          city: '待完善',
+          years: certData.years,
+          rating: 5.0,
+          tags: certData.tags.split(','),
+          desc: certData.intro,
+          intro: certData.intro,
+          cases: 0,
+          winRate: '暂无',
+          cert: certData.license,
+          honors: [],
+          services: [
+            { type: '线上法律咨询', desc: '文字/语音，30分钟以内', period: '即时响应', price: '¥200/次' },
+            { type: '诉讼文书代写', desc: '起诉状、答辩状等', period: '3-5个工作日', price: '¥800起' }
+          ],
+          reviews: []
+        };
+        if (existingIndex >= 0) {
+          customLawyers[existingIndex] = lawyerEntry;
+        } else {
+          customLawyers.push(lawyerEntry);
+        }
+        localStorage.setItem('faqiao_custom_lawyers', JSON.stringify(customLawyers));
       } else if (action === 'reject') {
         certData.status = 'reject';
         certData.reviewedAt = new Date().toLocaleString();
@@ -706,5 +611,6 @@
     }
   </script>
 
+  <script src="common.js"></script>
 </body>
 </html>
