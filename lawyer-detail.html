@@ -368,6 +368,50 @@
       border-color: #2d6a9f;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+        padding: 16px 12px;
+        gap: 16px;
+      }
+      .left-panel {
+        padding: 20px 16px;
+      }
+      .right-panel {
+        gap: 16px;
+      }
+      .card {
+        padding: 20px 16px;
+      }
+      /* 服务表格：小屏允许横向滚动，避免被压缩 */
+      .card .service-table-wrap,
+      .card {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .service-table {
+        min-width: 520px;
+      }
+      .chat-float-btn {
+        bottom: 16px;
+        right: 16px;
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+      }
+      .chat-panel {
+        bottom: 76px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        height: 62vh;
+      }
+      .chat-panel .chat-msg .bubble {
+        max-width: 90%;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -375,7 +419,7 @@
   <!-- 导航栏 -->
   <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="index.html">首页</a>
       <a href="lawyer.html" class="active">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -386,8 +430,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 面包屑导航 -->

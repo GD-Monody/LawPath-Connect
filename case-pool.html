@@ -244,6 +244,44 @@
       font-size: 15px;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 20px 16px 14px;
+      }
+      .page-header h2 {
+        font-size: 20px;
+      }
+      .filter-bar {
+        padding: 14px 16px;
+        gap: 10px;
+      }
+      .filter-bar select {
+        flex: 1 1 45%;
+        min-width: 0;
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+      .case-list {
+        margin: 16px auto;
+        padding: 0 12px;
+      }
+      .case-card {
+        padding: 18px 16px;
+      }
+      .case-card .case-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .case-card .case-tags {
+        flex-wrap: wrap;
+      }
+      .case-footer {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+
     /* ===== 底部 ===== */
     
   </style>
@@ -253,7 +291,7 @@
   <!-- 导航栏 -->
   <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="index.html">首页</a>
       <a href="lawyer.html">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -264,8 +302,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 面包屑 -->

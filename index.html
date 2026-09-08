@@ -67,14 +67,41 @@
       color: #999;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 56px 16px;
+      }
+      .hero h1 {
+        font-size: 26px;
+        letter-spacing: 2px;
+      }
+      .hero p {
+        font-size: 14px;
+        line-height: 1.8;
+        padding: 0 8px;
+      }
+      .stats {
+        gap: 28px 12px;
+        padding: 32px 12px;
+        flex-wrap: wrap;
+      }
+      .stat-item {
+        flex: 1 1 40%;
+      }
+      .stat-num {
+        font-size: 28px;
+      }
+    }
+
   </style>
 </head>
 <body>
 
   <!-- 导航栏 -->
   <div class="navbar">
-    <div class="logo">⚖️ 律途</div>
-    <div class="nav-links">
+    <a href="index.html" class="logo">⚖️ 律途</a>
+    <nav class="nav-links" id="nav-links">
       <a href="index.html" class="active">首页</a>
       <a href="lawyer.html">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -85,8 +112,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 主视觉 -->

@@ -295,6 +295,42 @@
       text-decoration: none;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .main-content {
+        margin: 16px auto 40px;
+        padding: 0 12px;
+      }
+      .steps {
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        row-gap: 10px;
+      }
+      .step .dot {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+      }
+      .step-line {
+        width: 32px;
+        margin: 0 8px;
+      }
+      .card {
+        padding: 22px 16px;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      .info-table td:first-child {
+        width: auto;
+        min-width: 90px;
+      }
+      .admin-panel button {
+        margin-bottom: 8px;
+      }
+    }
+
     /* ===== 底部 ===== */
     
   </style>
@@ -304,7 +340,7 @@
   <!-- 导航栏 -->
   <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="index.html">首页</a>
       <a href="lawyer.html">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -315,8 +351,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 面包屑 -->

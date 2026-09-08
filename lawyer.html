@@ -155,6 +155,35 @@
     font-weight: bold;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 20px 16px;
+      }
+      .page-header h2 {
+        font-size: 20px;
+      }
+      .filter-bar {
+        padding: 14px 16px;
+        gap: 10px;
+      }
+      .filter-bar select {
+        flex: 1 1 45%;
+        min-width: 0;
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+      .lawyer-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 20px 16px;
+        max-width: 100%;
+      }
+      .lawyer-card {
+        padding: 20px 16px;
+      }
+    }
+
     /* ===== 底部 ===== */
     
     </style>
@@ -164,7 +193,7 @@
 <!-- 导航栏 -->
 <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
     <a href="index.html">首页</a>
     <a href="lawyer.html" class="active">找律师</a>
     <a href="publish.html">案件发布</a>
@@ -175,8 +204,12 @@
     <a href="public-welfare.html">公益咨询</a>
     <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
     <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
-    <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+    </nav>
+    <div class="nav-actions">
+        <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
 </div>
 
 <!-- 页面标题 -->

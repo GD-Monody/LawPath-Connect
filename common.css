@@ -20,8 +20,8 @@ body {
 .navbar {
   background: #1a3a5c;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 0 60px;
   height: 64px;
 }
@@ -32,12 +32,21 @@ body {
   font-weight: bold;
   letter-spacing: 2px;
   text-decoration: none;
+  flex-shrink: 0;
+}
+
+/* 桌面端：导航链接组靠右，与注册按钮连排 */
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 28px;
 }
 
 .navbar .nav-links a {
   color: #ccd9e6;
   text-decoration: none;
-  margin-left: 32px;
+  margin-left: 0;
   font-size: 14px;
   transition: color 0.3s;
 }
@@ -46,9 +55,19 @@ body {
   color: #fff;
 }
 
-.navbar .nav-links a.active {
+.navbar .nav-links a.active,
+.navbar .nav-links a.admin-link.active {
   color: #e8a838;
   font-weight: bold;
+}
+
+/* 右侧操作区：注册/登录 + 汉堡按钮 */
+.navbar .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 28px;
+  flex-shrink: 0;
 }
 
 .navbar .btn-register {
@@ -57,7 +76,35 @@ body {
   padding: 8px 20px;
   border-radius: 4px;
   font-weight: bold;
-  margin-left: 32px;
+  margin-left: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.3s;
+}
+
+.navbar .btn-register:hover {
+  background: #f0b64e;
+}
+
+/* 汉堡按钮：桌面隐藏，移动端显示 */
+.navbar .nav-toggle {
+  display: none;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 抽屉遮罩：桌面隐藏 */
+.nav-mask {
+  display: none;
 }
 
 /* ===== 面包屑 ===== */
@@ -94,32 +141,110 @@ body {
 }
 
 /* =====================================================
-   移动端适配（小于 768px，覆盖手机和平板竖屏）
+   移动端适配（小于 768px）
+   导航改为：律途 logo 居左 + 注册/登录居右 + 汉堡菜单
+   点击汉堡从左侧滑出竖向抽屉菜单
    ===================================================== */
 @media (max-width: 768px) {
-  /* 导航栏：上下排列，允许换行 */
   .navbar {
-    padding: 12px 16px;
-    height: auto;
-    flex-direction: column;
-    gap: 10px;
+    padding: 0 16px;
+    height: 56px;
+    position: relative;
   }
 
+  /* 汉堡按钮显示 */
+  .navbar .nav-toggle {
+    display: inline-flex;
+  }
+
+  /* 让汉堡/注册按钮浮在遮罩与抽屉之上，可再次点击关闭 */
+  .navbar .nav-actions {
+    position: relative;
+    z-index: 1300;
+  }
+
+  /* 导航链接组：桌面横排 → 左侧滑出抽屉 */
   .navbar .nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 82vw);
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: #152c47;
+    padding: 0 0 24px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    z-index: 1200;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 抽屉顶部品牌标题 */
+  .navbar .nav-links::before {
+    content: "⚖️ 律途";
+    display: block;
+    padding: 20px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .navbar .nav-links a {
     margin-left: 0;
-    font-size: 12px;
+    font-size: 15px;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #ccd9e6;
+  }
+
+  .navbar .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .navbar .nav-links a.active {
+    color: #e8a838;
+    background: rgba(232, 168, 56, 0.1);
+    font-weight: bold;
+  }
+
+  /* 右侧操作区 */
+  .navbar .nav-actions {
+    gap: 8px;
+    margin-left: auto;
   }
 
   .navbar .btn-register {
-    margin-left: 0;
-    padding: 6px 14px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* 打开抽屉后 body 锁定滚动，遮罩显示 */
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  body.nav-open .navbar .nav-links {
+    transform: translateX(0);
+  }
+
+  .nav-mask {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1100;
+  }
+
+  body.nav-open .nav-mask {
+    display: block;
   }
 
   /* 面包屑 */

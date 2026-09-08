@@ -331,7 +331,43 @@
     }
 
     /* ===== 空表单隐藏 ===== */
-    .form-section
+
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 36px 16px 28px;
+      }
+      .hero h2 {
+        font-size: 22px;
+      }
+      .form-section {
+        margin: -14px 12px 0;
+        padding: 24px 16px;
+      }
+      .result-section {
+        margin: 20px auto;
+        padding: 0 12px;
+      }
+      .match-card {
+        padding: 18px 16px;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .match-card .rank-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+      .match-card .match-score {
+        width: auto;
+      }
+      .match-card .score-num {
+        font-size: 28px;
+      }
+      .match-card .lawyer-info {
+        flex: 1 1 100%;
+      }
+    }
 
     /* ===== 底部 ===== */
     
@@ -342,7 +378,7 @@
   <!-- 导航栏 -->
   <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="index.html">首页</a>
       <a href="lawyer.html">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -353,8 +389,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 面包屑 -->

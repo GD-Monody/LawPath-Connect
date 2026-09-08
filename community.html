@@ -339,6 +339,73 @@
       text-decoration: none;
     }
 
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 18px 16px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .page-header h2 {
+        font-size: 20px;
+      }
+      .btn-new-post {
+        padding: 8px 18px;
+        font-size: 13px;
+      }
+      .main-content {
+        flex-direction: column;
+        padding: 14px 12px;
+        gap: 14px;
+      }
+      .sidebar {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 8px;
+        gap: 6px;
+      }
+      .sidebar .cat-title {
+        width: 100%;
+        padding: 8px 10px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .sidebar .cat-item {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-left: none;
+        border-radius: 14px;
+        background: #f5f7fa;
+      }
+      .sidebar .cat-item.active {
+        border-left: none;
+      }
+      .sidebar .cat-item .count {
+        float: none;
+        margin-left: 4px;
+      }
+      .post-form-card {
+        padding: 18px 16px;
+      }
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+      .form-row .btn-submit-post {
+        width: 100%;
+      }
+      .post-item {
+        padding: 14px 16px;
+      }
+      .post-item .post-tag {
+        display: none;
+      }
+      .post-item .reply-label {
+        display: none;
+      }
+    }
+
     /* ===== 底部 ===== */
 
     /* 隐藏 */
@@ -350,7 +417,7 @@
   <!-- 导航栏 -->
   <div class="navbar">
     <a href="index.html" class="logo">⚖️ 律途</a>
-    <div class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="index.html">首页</a>
       <a href="lawyer.html">找律师</a>
       <a href="publish.html">案件发布</a>
@@ -361,8 +428,12 @@
       <a href="public-welfare.html">公益咨询</a>
       <a href="admin.html" id="admin-entry" class="admin-link" style="display:none;">后台管理</a>
       <a href="profile.html" id="profile-entry" style="display:none;">个人主页</a>
+    </nav>
+    <div class="nav-actions">
       <a href="login.html" class="btn-register" id="nav-user-btn">注册 / 登录</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="打开菜单">☰</button>
     </div>
+    <div class="nav-mask" id="nav-mask"></div>
   </div>
 
   <!-- 面包屑 -->
